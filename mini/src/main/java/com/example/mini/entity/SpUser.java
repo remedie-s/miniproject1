@@ -22,13 +22,13 @@ import lombok.Setter;
 @Setter
 @Entity
 @NoArgsConstructor
-public class User {
+public class SpUser {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
 	@Column(length = 50, unique = true)
-	private String user_name;
+	private String spuser_name;
 	@Column(length = 108)
 	private String password;
 	@Column(length = 10)
@@ -41,37 +41,33 @@ public class User {
 	private String e_mail;
 	
 	private LocalDateTime create_date;
-	private UserGrade user_grade;
+	private SpUserGrade spuser_grade;
+	
+	@JsonIgnore
+	@OneToOne(mappedBy = "spuser", cascade = CascadeType.REMOVE)
+	private SpCart spcart;
+	
 	@JsonIgnore
 	@OneToMany
-	private List <Address> addressList;
+	private List <SpAddress> addressList;
+	
 	@JsonIgnore
-	@OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
-	private List <Order> ordersList;
+	@OneToMany(mappedBy = "spuser", cascade = CascadeType.REMOVE)
+	private List <SpOrder> ordersList;
+	
 	@JsonIgnore
-	@OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+	@OneToMany(mappedBy = "spuser", cascade = CascadeType.REMOVE)
 	private List <Review> reviewList;
+	
 	@JsonIgnore
-	@OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
-	private Cart cart;
-	@JsonIgnore
-	@OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+	@OneToMany(mappedBy = "spuser", cascade = CascadeType.REMOVE)
 	private List <QnA_Post> qnA_PostList;
+	
 	@JsonIgnore
-	@OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+	@OneToMany(mappedBy = "spuser", cascade = CascadeType.REMOVE)
 	private List <QnA_Review> qnA_reviewList;
 	
-	public User(String user_name, String password, String first_name, String last_name, String phone_number,
-			String e_mail, UserGrade user_grade) {
-		super();
-		this.user_name = user_name;
-		this.password = password;
-		this.first_name = first_name;
-		this.last_name = last_name;
-		this.phone_number = phone_number;
-		this.e_mail = e_mail;
-		this.user_grade = user_grade;
-	}
+	
 	
 	
 

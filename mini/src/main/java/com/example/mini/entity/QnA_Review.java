@@ -27,7 +27,7 @@ public class QnA_Review {
 		private Integer id;
 		
 		@ManyToOne
-		private User user_id;
+		private SpUser spuser;
 		@Column(length = 100)
 		private String subject;
 		@Column(length = 500)

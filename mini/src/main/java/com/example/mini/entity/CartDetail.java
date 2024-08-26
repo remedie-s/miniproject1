@@ -26,10 +26,10 @@ public class CartDetail {
 		@GeneratedValue(strategy = GenerationType.IDENTITY)
 		private Integer id;
 		@ManyToOne
-		private Product product_id;
+		private Product product;
 		private Integer quantity;
 		@ManyToOne
-		private Cart cart;
+		private SpCart spcart;
 		
 		
 }

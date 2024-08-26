@@ -29,14 +29,14 @@ public class QnA_Post {
 		@GeneratedValue(strategy = GenerationType.IDENTITY)
 		private Integer id;
 		@ManyToOne
-		private User user_id;
+		private SpUser spuser;
 		@Column(length = 100)
 		private String subject;
 		@Column(length = 500)
 		private String content;
 		private LocalDateTime create_date;
 		@JsonIgnore
-		@OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+		@OneToMany(mappedBy = "qnA_Post", cascade = CascadeType.REMOVE)
 		private List <QnA_Review> reviewsList;
 		
 		

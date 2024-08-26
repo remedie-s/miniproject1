@@ -1,7 +1,7 @@
 package com.example.mini.entity;
 
 
-public enum UserGrade {
+public enum SpUserGrade {
 	ADMIN,
 	GOLD,
 	SILVER,

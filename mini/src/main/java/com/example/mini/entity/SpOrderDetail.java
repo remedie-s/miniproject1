@@ -3,8 +3,6 @@ package com.example.mini.entity;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -23,20 +21,23 @@ import lombok.ToString;
 @Entity
 @ToString
 @NoArgsConstructor
-public class Cart {
+public class SpOrderDetail {
 	
 	
 		@Id
 		@GeneratedValue(strategy = GenerationType.IDENTITY)
 		private Integer id;
-		@OneToOne
-		private User user;
-		private LocalDateTime create_date;
-		@JsonIgnore
-		@OneToOne
-		private Order order_id;
-		@JsonIgnore
-		@OneToMany(mappedBy = "cart", cascade = CascadeType.REMOVE)
-		private List <Order> orderDetails;
+	
 		
+		@OneToOne
+		private SpAddress spaddress;
+		private OrderStatus status;
+		private String request;
+		
+		
+		
+		
+
+	
+
 }

@@ -28,7 +28,7 @@ public class Review {
 		@ManyToOne
 		private Product product;
 		@ManyToOne
-		private User user_id;
+		private SpUser spuser;
 		@Column(length = 100)
 		private String subject;
 		@Column(length = 500)
