@@ -13,32 +13,35 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-
 @Getter
 @Setter
-@ToString
 @Entity
+@ToString
 @NoArgsConstructor
-public class Address {
+public class QnA_Post {
 	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
-	@ManyToOne
-	private User user_id;
-	private String street_name;
-	private Integer building_number;
-	private String detail_address;
-	private String city;
-	private String region="한국";
-	@JsonIgnore
-	@OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
-	private List<Order> orderList;
+	
+		@Id
+		@GeneratedValue(strategy = GenerationType.IDENTITY)
+		private Integer id;
+		@ManyToOne
+		private User user_id;
+		@Column(length = 100)
+		private String subject;
+		@Column(length = 500)
+		private String content;
+		private LocalDateTime create_date;
+		@JsonIgnore
+		@OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+		private List <QnA_Review> reviewsList;
+		
+		
+		
+
 	
 
 }

@@ -8,32 +8,38 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
+import lombok.ToString;
 @Getter
 @Setter
 @Entity
+@ToString
 @NoArgsConstructor
-public class Product {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
-	
-	@Column(length = 50)
-	private String product_name;
-	@Column(length = 300)
-	private String description;
-	private Integer product_price;
-	private String product_quantity;
-	private String image_url; 
-	@OneToMany
-	private List<Review> reviewList;
-	private LocalDateTime create_date;
+public class QnA_Review {
 	
 	
+		@Id
+		@GeneratedValue(strategy = GenerationType.IDENTITY)
+		private Integer id;
+		
+		@ManyToOne
+		private User user_id;
+		@Column(length = 100)
+		private String subject;
+		@Column(length = 500)
+		private String content;
+		@ManyToOne
+		private QnA_Post qnA_Post;
+		
+		private LocalDateTime create_date;
+		
+		
+		
+
 	
 
 }

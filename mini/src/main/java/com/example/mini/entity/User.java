@@ -3,12 +3,17 @@ package com.example.mini.entity;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -34,10 +39,27 @@ public class User {
 	private String phone_number;
 	@Column(unique = true)
 	private String e_mail;
-	@OneToMany
-	private List <Address> addressList;// TODO 1:  추후 수정(주소 배열)
+	
 	private LocalDateTime create_date;
-	private UserGrade user_grade;// TODO 2:  추후 수정(grade enum)
+	private UserGrade user_grade;
+	@JsonIgnore
+	@OneToMany
+	private List <Address> addressList;
+	@JsonIgnore
+	@OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+	private List <Order> ordersList;
+	@JsonIgnore
+	@OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+	private List <Review> reviewList;
+	@JsonIgnore
+	@OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
+	private Cart cart;
+	@JsonIgnore
+	@OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+	private List <QnA_Post> qnA_PostList;
+	@JsonIgnore
+	@OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+	private List <QnA_Review> qnA_reviewList;
 	
 	public User(String user_name, String password, String first_name, String last_name, String phone_number,
 			String e_mail, UserGrade user_grade) {

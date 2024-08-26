@@ -13,9 +13,11 @@ import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 @Getter
 @Setter
 @Entity
+@ToString
 @NoArgsConstructor
 public class Review {
 	
@@ -23,8 +25,8 @@ public class Review {
 		@Id
 		@GeneratedValue(strategy = GenerationType.IDENTITY)
 		private Integer id;
-		@ManyToOne//TODO 4 : 외래키 작성
-		private Product product_id;
+		@ManyToOne
+		private Product product;
 		@ManyToOne
 		private User user_id;
 		@Column(length = 100)

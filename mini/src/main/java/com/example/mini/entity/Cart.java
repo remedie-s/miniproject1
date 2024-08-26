@@ -18,27 +18,25 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-
 @Getter
 @Setter
-@ToString
 @Entity
+@ToString
 @NoArgsConstructor
-public class Address {
+public class Cart {
 	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
-	@ManyToOne
-	private User user_id;
-	private String street_name;
-	private Integer building_number;
-	private String detail_address;
-	private String city;
-	private String region="한국";
-	@JsonIgnore
-	@OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
-	private List<Order> orderList;
 	
-
+		@Id
+		@GeneratedValue(strategy = GenerationType.IDENTITY)
+		private Integer id;
+		@OneToOne
+		private User user;
+		private LocalDateTime create_date;
+		@JsonIgnore
+		@OneToOne
+		private Order order_id;
+		@JsonIgnore
+		@OneToMany(mappedBy = "cart", cascade = CascadeType.REMOVE)
+		private List <Order> orderDetails;
+		
 }
