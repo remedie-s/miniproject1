@@ -1,5 +1,4 @@
-package com.example.mini.entity;
-
+package com.example.mini.config;
 
 public enum SpUserGrade {
 	ADMIN,
@@ -9,3 +8,4 @@ public enum SpUserGrade {
 	SELLER
 
 }
+

@@ -3,6 +3,8 @@ package com.example.mini.entity;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.example.mini.config.OrderStatus;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

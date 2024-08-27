@@ -3,6 +3,7 @@ package com.example.mini.entity;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.example.mini.config.SpUserGrade;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
