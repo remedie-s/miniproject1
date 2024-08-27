@@ -65,6 +65,7 @@ public class SpUserController {
 		
 		return "redirect:/spuser/login";
 	}
+	//TODO 해야함
 	
 	
 	
