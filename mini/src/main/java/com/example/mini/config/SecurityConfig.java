@@ -59,7 +59,7 @@ public class SecurityConfig {
 					.logoutRequestMatcher(new AntPathRequestMatcher("/spuser/logout"))
 					.logoutSuccessUrl("/spuser/login")
 					.invalidateHttpSession(true))
-//			.addFilterBefore(new TokenAuthenticationFilter(tokenProvider),UsernamePasswordAuthenticationFilter.class)
+			.addFilterBefore(new TokenAuthenticationFilter(tokenProvider),UsernamePasswordAuthenticationFilter.class)
 			
 			;
 		return http.build();

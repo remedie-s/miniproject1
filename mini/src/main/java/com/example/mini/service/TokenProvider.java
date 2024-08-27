@@ -1,11 +1,20 @@
 package com.example.mini.service;
 
 import java.time.Duration;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
+import java.util.Optional;
+import java.util.Set;
 
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import com.example.mini.config.JwtProperties;
+import com.example.mini.entity.RefreshToken;
 import com.example.mini.entity.SpUser;
 import com.example.mini.repository.RefreshTokenRepository;
 
@@ -85,4 +94,21 @@ public class TokenProvider {
 				;
 	}
 
+	public Authentication getAuthentication(String token) {
+		Claims claims = getClaims(token);
+		Set<SimpleGrantedAuthority> authorities = Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")); //TODO 고쳐야함 하나만들어갈수있나?
+		return new UsernamePasswordAuthenticationToken(
+				new User(claims.getSubject(),"", authorities),
+				token,
+				authorities
+				);
+	}
+	// 리프레시 토큰 유효성
+	public boolean isValidRefreshToken(String refreshToken) {
+		Optional<RefreshToken> opt =this.refreshTokenRepository.findbyRefreshToken(refreshToken);
+		if(opt.isPresent()) {
+			return true;
+		}
+		return false;
+	}
 }

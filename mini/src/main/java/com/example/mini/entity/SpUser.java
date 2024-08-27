@@ -26,7 +26,7 @@ import lombok.Setter;
 public class SpUser {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+	private Long id;
 	
 	@Column(length = 50, unique = true)
 	private String spuser_name;
