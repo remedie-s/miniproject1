@@ -49,7 +49,7 @@ public class SecurityConfig {
 			.authorizeHttpRequests( ( a ) -> a.requestMatchers
 					(new AntPathRequestMatcher("/**")).permitAll() )
 //					(new AntPathRequestMatcher("/**")).authenticated() )
-			
+//			.csrf().disable()
 			.csrf( (b) ->
 			b.ignoringRequestMatchers(new AntPathRequestMatcher("/api/**")))
 			.headers( (c) -> c.addHeaderWriter(new XFrameOptionsHeaderWriter()) )

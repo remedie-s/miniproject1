@@ -105,7 +105,7 @@ public class TokenProvider {
 	}
 	// 리프레시 토큰 유효성
 	public boolean isValidRefreshToken(String refreshToken) {
-		Optional<RefreshToken> opt =this.refreshTokenRepository.findbyRefreshToken(refreshToken);
+		Optional<RefreshToken> opt =this.refreshTokenRepository.findByRefreshToken(refreshToken);
 		if(opt.isPresent()) {
 			return true;
 		}

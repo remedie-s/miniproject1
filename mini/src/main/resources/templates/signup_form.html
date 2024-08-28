@@ -1,5 +1,6 @@
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -17,18 +18,17 @@
 <body class="hold-transition login-page">
 <div class="login-box">
   <div class="login-logo">
-    <a href="#"><b>스프링</b>부트</a>
+    <a href="#"><b>미니프로젝트</b>쇼핑몰</a>
   </div>
   <!-- /.login-logo -->
   <div class="card">
     <div class="card-body login-card-body">
       <p class="login-box-msg">회원가입</p>
 
-      <form method="post" th:object="${userForm}" th:action="@{/user/signup}">
-		<div th:replace="~{lib/frag :: formErrorFrag}"></div>
+     <form method="post" th:object="${spUserForm}" th:action="@{/spuser/signup}">		
 		
         <div class="input-group mb-3">
-          <input type="text"  id="username" th:field="*{username}" class="form-control" placeholder="아이디">
+        <input type="text" id="spuser_name"  th:field="*{spuser_name}" class="form-control" placeholder="아이디"> 
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-envelope"></span>
@@ -36,7 +36,7 @@
           </div>
         </div>
         <div class="input-group mb-3">
-          <input type="password"  id="password1" th:field="*{password1}" class="form-control" placeholder="비밀번호">
+          <input type="password" id="password1" th:field="*{password1}" class="form-control" placeholder="비밀번호">
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-lock"></span>
@@ -44,15 +44,41 @@
           </div>
         </div>
 		<div class="input-group mb-3">
-          <input type="password"  id="password2" th:field="*{password2}" class="form-control" placeholder="비밀번호 확인">
+          <input type="password" id="password2" th:field="*{password2}" class="form-control" placeholder="비밀번호 확인">
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-lock"></span>
             </div>
           </div>
         </div>
+        <div class="input-group mb-3">
+          <input type="text" id="first_name" th:field="*{first_name}" class="form-control" placeholder="이름">
+          <div class="input-group-append">
+            <div class="input-group-text">
+              
+            </div>
+          </div>
+        </div>
+        <div class="input-group mb-3">
+          <input type="text" id="last_name" th:field="*{last_name}" class="form-control" placeholder="성">
+          <div class="input-group-append">
+            <div class="input-group-text">
+            
+            </div>
+          </div>
+        </div>
+        <div class="input-group mb-3">
+          <input type="text" id="phone_number"  th:field="*{phone_number}" class="form-control" placeholder="전화번호">
+          <div class="input-group-append">
+            <div class="input-group-text">
+              <span class="fas fa-email"></span>
+            </div>
+          </div>
+        </div>
+		
+		
 		<div class="input-group mb-3">
-          <input type="email"  id="email" th:field="*{email}" class="form-control" placeholder="이메일">
+          <input type="email" id="e_mail" th:field="*{e_mail}" class="form-control" placeholder="이메일">
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-email"></span>

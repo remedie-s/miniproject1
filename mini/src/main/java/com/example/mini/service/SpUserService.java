@@ -31,7 +31,7 @@ public class SpUserService {
 		user.setPhone_number(phone_number);
 		user.setE_mail(e_mail);
 		user.setSpuser_grade(SpUserGrade.BRONZE);
-		user.setAddressList(null);
+		user.setAddressList(null);//TODO AddressList 고쳐야함
 		user.setCreate_date(LocalDateTime.now());
 		try {
 			this.spUserRepository.save(user);
