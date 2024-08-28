@@ -12,7 +12,7 @@ import lombok.Setter;
 public class SpUserForm {
 	@Size(min=3, max = 32)
 	@NotEmpty(message = "아이디를 입력하세요")
-	private String spuser_name;
+	private String username;
 	@NotEmpty(message = "비밀번호를 입력하세요")
 	private String password1;
 	@NotEmpty(message = "비밀번호 확인을 입력하세요")

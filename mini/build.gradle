@@ -42,7 +42,7 @@ dependencies {
     
     // h2 데이터베이스 설치
     // 런타임시에만 해당 라이브러리 필요
-    runtimeOnly 'com.h2database:h2'
+    //runtimeOnly 'com.h2database:h2'
     
     // JPA 
     // implementation => 관련된것만 컴파일 및 빌드 수행 => 리빌드 과정이 빠름

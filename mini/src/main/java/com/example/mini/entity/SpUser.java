@@ -18,6 +18,7 @@ import jakarta.persistence.OneToOne;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
@@ -29,7 +30,7 @@ public class SpUser {
 	private Long id;
 	
 	@Column(length = 50, unique = true)
-	private String spuser_name;
+	private String username;
 	@Column(length = 108)
 	private String password;
 	@Column(length = 10)
@@ -49,7 +50,7 @@ public class SpUser {
 	private SpCart spcart;
 	
 	@JsonIgnore
-	@OneToMany
+	@OneToMany(mappedBy = "spuser", cascade = CascadeType.REMOVE)
 	private List <SpAddress> addressList;
 	
 	@JsonIgnore

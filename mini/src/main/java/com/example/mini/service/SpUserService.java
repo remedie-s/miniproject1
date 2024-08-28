@@ -21,10 +21,10 @@ public class SpUserService {
 	
 	
 
-	public SpUser create(String spuser_name, String password, String first_name, String last_name,
+	public SpUser create(String username, String password, String first_name, String last_name,
 			String phone_number, String e_mail) {
 		SpUser user = new SpUser();
-		user.setSpuser_name(spuser_name);
+		user.setUsername(username);
 		user.setPassword(this.passwordEncoder.encode(password));
 		user.setFirst_name(first_name);
 		user.setLast_name(last_name);
