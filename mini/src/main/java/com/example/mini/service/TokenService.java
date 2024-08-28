@@ -4,6 +4,7 @@ import java.time.Duration;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.example.mini.config.JwtProperties;
 import com.example.mini.entity.RefreshToken;
@@ -11,6 +12,9 @@ import com.example.mini.entity.SpUser;
 import com.example.mini.exception.DataNotFoundException;
 import com.example.mini.repository.RefreshTokenRepository;
 
+import io.swagger.v3.oas.annotations.servers.Server;
+
+@Service
 public class TokenService {
 	
 	@Autowired
@@ -27,13 +31,13 @@ public class TokenService {
 		if(!tokenProvider.isValidRefreshToken(refreshToken)) {
 			throw new IllegalArgumentException("Unexpected token");
 		}
-		Long userId = findByRefreshToken(refreshToken).getUserId();
-		SpUser spuser= spUserService.findbyId(userId);
+		Long spuserId = findByRefreshToken(refreshToken).getSpuserid();
+		SpUser spuser= spUserService.findbyId(spuserId);
 		return tokenProvider.geneateToken(spuser, Duration.ofHours(hour));
 	}
 
 	public RefreshToken findByRefreshToken(String refreshToken) {
-		Optional<RefreshToken> opt = this.refreshTokenRepository.findbyRefreshToken(refreshToken);
+		Optional<RefreshToken> opt = this.refreshTokenRepository.findByRefreshToken(refreshToken);
 		if(opt.isPresent()) {
 			return opt.get();			
 		}
@@ -41,7 +45,7 @@ public class TokenService {
 	}
 	
 	public RefreshToken findByUserId(Long Spuserid) {
-		Optional<RefreshToken> opt = this.refreshTokenRepository.findbySpUserId(Spuserid);
+		Optional<RefreshToken> opt = this.refreshTokenRepository.findById(Spuserid);
 		if(opt.isPresent()) {
 			return opt.get();			
 		}

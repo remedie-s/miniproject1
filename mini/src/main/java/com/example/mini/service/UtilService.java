@@ -1,19 +1,36 @@
 package com.example.mini.service;
 
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Service
 public class UtilService {
 
-	public Object toSecondOfDay(int i) {
-		// TODO Auto-generated method stub
-		return null;
+	public int toSecondOfDay(int day) {
+		
+		return 60*60*24*day;
 	}
 
-	public void setCookie(String string, String token, Object secondOfDay, HttpServletResponse response) {
-		// TODO Auto-generated method stub
+	public void setCookie(String key, String value, int expiration, HttpServletResponse response) {
+		Cookie cookie = new Cookie(key, value);
+		cookie.setMaxAge(expiration);
+		cookie.setHttpOnly(true);
+		cookie.setPath("/");
+		response.addCookie(cookie);
+	}
+	
+	public MediaType getMediaType(ServletContext servletContext, String filename) {
+		try {
+			String  mimeType = servletContext.getMimeType(filename);
+			MediaType mediaType = MediaType.parseMediaType(mimeType);
+			return mediaType;
+		} catch (Exception e) {
+			return MediaType.APPLICATION_OCTET_STREAM;
+		}
 		
 	}
 

@@ -1,22 +1,52 @@
 package com.example.mini.service;
 
+import java.time.LocalDateTime;
+import java.util.Optional;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.example.mini.config.SpUserGrade;
 import com.example.mini.entity.SpUser;
+import com.example.mini.exception.DataNotFoundException;
+import com.example.mini.repository.SpUserRepository;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 @Service
 public class SpUserService {
+	private final SpUserRepository spUserRepository;
+	private final PasswordEncoder passwordEncoder;
+	
+	
 
-	public SpUser create(String spuser_name, String password1, String password2, String first_name, String last_name,
+	public SpUser create(String spuser_name, String password, String first_name, String last_name,
 			String phone_number, String e_mail) {
-		// TODO Auto-generated method stub
-		return null;
+		SpUser user = new SpUser();
+		user.setSpuser_name(spuser_name);
+		user.setPassword(this.passwordEncoder.encode(password));
+		user.setFirst_name(first_name);
+		user.setLast_name(last_name);
+		user.setPhone_number(phone_number);
+		user.setE_mail(e_mail);
+		user.setSpuser_grade(SpUserGrade.BRONZE);
+		user.setAddressList(null);
+		user.setCreate_date(LocalDateTime.now());
+		try {
+			this.spUserRepository.save(user);
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		}
+		return user;
 	}
 
 	public SpUser findbyId(Long userId) {
-		return null;
-		// TODO Auto-generated method stub
-		
+		Optional<SpUser> spuser = this.spUserRepository.findById(userId);
+		if(spuser.isPresent()) {
+			return spuser.get();
+		}
+		throw new DataNotFoundException("user not found");
 	}
-
 }

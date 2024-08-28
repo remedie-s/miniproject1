@@ -6,6 +6,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.mini.config.JwtProperties;
@@ -17,6 +18,8 @@ import com.example.mini.service.TokenService;
 import com.example.mini.service.UtilService;
 
 import groovy.lang.Binding;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -45,7 +48,7 @@ public class SpUserController {
 		try {
 			System.out.println("회원가입 진행");
 			spUser=this.spUserService.create(spUserForm.getSpuser_name(), spUserForm.getPassword1(), 
-											spUserForm.getPassword2(), spUserForm.getFirst_name(), 
+											spUserForm.getFirst_name(), 
 											spUserForm.getLast_name(), spUserForm.getPhone_number(),
 											spUserForm.getE_mail());
 			System.out.println("회원가입 완료");
@@ -65,7 +68,19 @@ public class SpUserController {
 		
 		return "redirect:/spuser/login";
 	}
-	//TODO 해야함 ""usercontroller userservice  refreshtoken utilservice""
+	@GetMapping("/login")
+	public String login(HttpServletRequest httpServletRequest) {
+		httpServletRequest.getCookies();
+		return "login_form";
+	}
+	
+	@GetMapping("/reissue/{rToken}")
+	public String reissue(@PathVariable ("rToken") String rToken, HttpServletResponse httpServletResponse) {
+		String accessToken = tokenService.createNewAccessToken(rToken, 24*7);
+		utilService.setCookie("access_token", accessToken, utilService.toSecondOfDay(7), httpServletResponse);
+		return "redirect:/";
+	}
+	
 	
 	
 	

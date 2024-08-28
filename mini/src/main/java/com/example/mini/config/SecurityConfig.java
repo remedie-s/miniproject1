@@ -47,18 +47,23 @@ public class SecurityConfig {
 			.authorizeHttpRequests( ( a ) -> a.requestMatchers
 					(new AntPathRequestMatcher("/api/**")).permitAll() )
 			.authorizeHttpRequests( ( a ) -> a.requestMatchers
-					(new AntPathRequestMatcher("/**")).authenticated() )
+					(new AntPathRequestMatcher("/**")).permitAll() )
+//					(new AntPathRequestMatcher("/**")).authenticated() )
+			
 			.csrf( (b) ->
 			b.ignoringRequestMatchers(new AntPathRequestMatcher("/api/**")))
 			.headers( (c) -> c.addHeaderWriter(new XFrameOptionsHeaderWriter()) )
+			
 			.formLogin( (formLogin) -> formLogin
 						.loginPage("/spuser/login")
 						.defaultSuccessUrl("/")
 						)
+			
 			.logout( (logout) -> logout
 					.logoutRequestMatcher(new AntPathRequestMatcher("/spuser/logout"))
 					.logoutSuccessUrl("/spuser/login")
 					.invalidateHttpSession(true))
+			
 			.addFilterBefore(new TokenAuthenticationFilter(tokenProvider),UsernamePasswordAuthenticationFilter.class)
 			
 			;

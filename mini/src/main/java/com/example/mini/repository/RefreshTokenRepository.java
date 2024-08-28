@@ -9,8 +9,9 @@ import com.example.mini.entity.RefreshToken;
 
 public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long>{
 
-	Optional<RefreshToken> findbyRefreshToken(String refreshToken);
-	Optional<RefreshToken> findbySpUserId(Long spuserId);
+	Optional<RefreshToken> findByRefreshToken(String refreshToken);
+
+	
 
 	
 
