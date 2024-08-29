@@ -29,8 +29,8 @@ public class SpOrderDetail {
 		@Id
 		@GeneratedValue(strategy = GenerationType.IDENTITY)
 		private Integer id;
-	
-		
+		@OneToOne
+		private SpOrder spOrder;
 		@OneToOne
 		private SpAddress spaddress;
 		private OrderStatus status;

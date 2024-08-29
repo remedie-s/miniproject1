@@ -36,6 +36,12 @@ public class SpUserController {
 	private final TokenService tokenService;
 	private final JwtProperties jwtProperties;
 	private final UtilService utilService;
+	
+	@RequestMapping("/")
+	public String usermain(@PathVariable("id") Long id) {
+		this.spUserService.findbyId(id);
+		return "user_main";
+	}
 	@GetMapping("/signup")
 	public String signup(SpUserForm spUserForm) {
 		return "signup_form";

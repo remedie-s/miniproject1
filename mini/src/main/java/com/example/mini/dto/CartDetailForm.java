@@ -1,21 +1,22 @@
 package com.example.mini.dto;
 
-import java.time.LocalDateTime;
-
-import com.example.mini.entity.SpOrder;
-import com.example.mini.entity.SpUser;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.example.mini.entity.Product;
+import com.example.mini.entity.SpCart;
 
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotEmpty;
 
-public class SpCartForm {
+public class CartDetailForm {
 	
 	@Transient
 	private Integer id;
+	@NotEmpty(message = "도로명을 입력하세요.")
+	private Integer quantity;
 	
+	
+
 }

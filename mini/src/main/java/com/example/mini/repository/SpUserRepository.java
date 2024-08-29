@@ -10,4 +10,5 @@ public interface SpUserRepository extends JpaRepository<SpUser, Long> {
 
 	Optional<SpUser> findByUsername(String username);
 
+
 }

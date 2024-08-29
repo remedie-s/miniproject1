@@ -31,7 +31,8 @@ public class SpOrder {
 		private SpUser spuser;
 		@OneToOne
 		private SpCart spcart;
-		
+		@OneToOne
+		private SpOrderDetail spOrderDetail;
 		private LocalDateTime create_date;
 		
 		

@@ -49,4 +49,6 @@ public class SpUserService {
 		}
 		throw new DataNotFoundException("user not found");
 	}
+
+	
 }
