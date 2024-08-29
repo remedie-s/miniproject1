@@ -34,6 +34,8 @@ public class SpOrderDetail {
 		@OneToOne
 		private SpAddress spaddress;
 		private OrderStatus status;
+		@OneToOne
+		private Product product;
 		private String request;
 		
 		
