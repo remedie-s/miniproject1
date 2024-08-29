@@ -40,13 +40,12 @@ public class SpCartController {
 		// 앞에는 브라우저에서 제품ID받아서 제품넣고, 뒤에는 수량 받아서 수량 넣어야함
 		spcart.cartList.put(productid, quantity);
 	}
-	@PostMapping("/delete/{id}")
-	public void deleteCart(Model model, @PathVariable("id") Long id) {
+	@GetMapping("/delete/{id}")
+	public void deleteCart(@PathVariable("id") Long id) {
 		SpUser user = this.spUserService.findbyId(id);
 		SpCart spcart = user.getSpcart();
 		Long cartid = spcart.getId();
 		this.spCartService.delete(cartid);
-		
 	}
 	
 

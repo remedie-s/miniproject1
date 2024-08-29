@@ -3,6 +3,8 @@ package com.example.mini.entity;
 import java.time.LocalDateTime;
 import java.util.List;
 
+
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -35,7 +37,7 @@ public class Product {
 	private List<Review> reviewList;
 	private LocalDateTime create_date;
 	@OneToOne
-	private CartDetail cartDetail;
+	private SpCart Spcart;
 	@OneToOne
 	private SpOrderDetail spOrderDetail;
 	
