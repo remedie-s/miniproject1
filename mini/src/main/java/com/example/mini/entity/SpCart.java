@@ -35,6 +35,8 @@ public class SpCart {
 		@JsonIgnore
 		@OneToOne
 		private SpOrder sporder;
+		@OneToMany(cascade = CascadeType.REMOVE)
+		private List<CartDetail> cartDetailList;
 		
 		
 }

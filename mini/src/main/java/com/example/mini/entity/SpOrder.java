@@ -29,9 +29,9 @@ public class SpOrder {
 		private Integer id;
 		@ManyToOne
 		private SpUser spuser;
-		@OneToOne
+		@OneToOne(cascade = CascadeType.PERSIST)
 		private SpCart spcart;
-		@OneToOne
+		@OneToOne(cascade = CascadeType.REMOVE)
 		private SpOrderDetail spOrderDetail;
 		private LocalDateTime create_date;
 		
