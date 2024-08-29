@@ -1,6 +1,7 @@
 package com.example.mini.entity;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -18,6 +19,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+
 @Getter
 @Setter
 @Entity
@@ -28,15 +30,15 @@ public class SpCart {
 	
 		@Id
 		@GeneratedValue(strategy = GenerationType.IDENTITY)
-		private Integer id;
+		private Long id;
 		@OneToOne
 		private SpUser spuser;
 		private LocalDateTime create_date;
 		@JsonIgnore
 		@OneToOne
 		private SpOrder sporder;
-		@OneToMany(cascade = CascadeType.REMOVE)
-		private List<CartDetail> cartDetailList;
+		
+		public HashMap<Long, Long> cartList = new HashMap<Long, Long>();
 		
 		
 }

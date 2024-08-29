@@ -1,6 +1,7 @@
 package com.example.mini.service;
 
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,9 @@ import com.example.mini.repository.SpAddressRepository;
 public class SpAddressService {
 	@Autowired
 	private SpAddressRepository spAddressRepository;
+	public List<SpAddress> getAllSpAddress(){
+		return this.spAddressRepository.findAll();
+	};
 
 	public void create(SpUser spuser, Integer building_number, String street_name, String detail_address, String city) {
 		SpAddress spAddress = new SpAddress();

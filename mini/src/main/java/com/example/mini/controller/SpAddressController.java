@@ -1,5 +1,7 @@
 package com.example.mini.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,20 +29,36 @@ public class SpAddressController {
 	@Autowired
 	private SpUserService spUserService;
 	
+	@GetMapping("/list/{id}")
+	public String list(Model model, @PathVariable("id") Long id) {
+		SpUser user = this.spUserService.findbyId(id);
+		List<SpAddress> addressList = user.getAddressList();
+		model.addAttribute(addressList);
+		return "address_list";
+	}
+	
+	@GetMapping("/create/{id}")
+	public String AddressCreate(Model model, @PathVariable("id") Long id) {
+		model.addAttribute("method","post");
+		return "address_form";
+		
+	}
 	
 	
 	@PostMapping("/create/{id}")
-	public String AddressCreate(@Valid SpAddressForm spAddressForm,BindingResult bindingResult, Model model, @PathVariable("id") Long id) {
+	public String AddressCreate(@Valid SpAddressForm spAddressForm,BindingResult bindingResult, 
+								Model model, @PathVariable("id") Long id) {
 		SpUser spuser = this.spUserService.findbyId(id);
 		if(bindingResult.hasErrors()) {
 			model.addAttribute("spuser",spuser);
-			return "address_form";
+			return "address_list";
 		}
 		this.spAddressService.create(spuser,spAddressForm.getBuilding_number()
 				,spAddressForm.getStreet_name(),spAddressForm.getDetail_address()
 				,spAddressForm.getCity());
-		return "redirect:/spuser/"+spAddressForm.getId();
+			return "address_list";
 	}
+	
 	@GetMapping("/modify/{id}")
 	public String AddressModify(SpAddressForm spAddressForm, @PathVariable("id") Long id) {
 		SpAddress spAddress = this.spAddressService.selectOneAddress(id);
@@ -61,7 +79,7 @@ public class SpAddressController {
 		spAddress.setDetail_address(spAddressForm.getDetail_address());
 		spAddress.setCity(spAddressForm.getCity());
 		this.spAddressService.modify(spAddress);
-		return "redirect:/spuser/"+spAddress.getSpuser().getId();
+		return "redirect:/address/list";
 	}
 	@GetMapping("/delete/{id}")
 	public String AddressDelete(@PathVariable("id") Long id) {

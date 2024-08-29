@@ -22,13 +22,13 @@ import lombok.Setter;
 public class Product {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+	private Long id;
 	
 	@Column(length = 50)
 	private String product_name;
 	@Column(length = 300)
 	private String description;
-	private Integer product_price;
+	private Long product_price;
 	private String product_quantity;
 	private String image_url; 
 	@OneToMany(cascade = CascadeType.REMOVE)
