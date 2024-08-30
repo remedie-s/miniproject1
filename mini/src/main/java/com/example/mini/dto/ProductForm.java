@@ -30,13 +30,13 @@ public class ProductForm {
 	@NotEmpty(message = "물품 설명은 비어선 안됩니다.")
 	private String description;
 	@NotEmpty(message = "가격은 비어선 안됩니다.")
-	private Integer product_price;
+	private Long product_price;
 	@NotEmpty(message = "수량은 비어선 안됩니다.")
 	private String product_quantity;
 	@NotEmpty(message = "이미지 주소는 비어선 안됩니다.")
 	private String image_url;
 	
-	public ProductForm(String product_name,String description,Integer product_price,String product_quantity,String image_url) {
+	public ProductForm(String product_name,String description,Long product_price,String product_quantity,String image_url) {
 		super();
 		this.product_name = product_name;
 		this.description = description;
