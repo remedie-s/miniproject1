@@ -39,7 +39,7 @@ public class Product {
 	@OneToOne
 	private SpCart Spcart;
 	@OneToOne
-	private SpOrderDetail spOrderDetail;
+	private SpOrder spOrder;
 	
 	
 	

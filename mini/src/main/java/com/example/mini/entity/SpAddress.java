@@ -36,9 +36,8 @@ public class SpAddress {
 	private String detail_address;
 	private String city;
 	private String region="한국";
-	@JsonIgnore
-	@OneToOne
-	private SpOrderDetail sporderdetail;
+
+	
 	
 
 }

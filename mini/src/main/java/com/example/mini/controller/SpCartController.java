@@ -1,5 +1,7 @@
 package com.example.mini.controller;
 
+import java.security.Principal;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -28,24 +30,36 @@ public class SpCartController {
 	private final SpCartService spCartService;
 	private final SpUserService spUserService;
 	
+	@GetMapping("/list/{id}")
+	public String list(@Valid SpCartForm spCartForm,BindingResult bindingResult
+			, Model model, @PathVariable("id") Long id,Principal principal) {
+		String name = principal.getName();
+		SpUser user = this.spUserService.findbyUsername(name);
+		SpCart spcart = user.getSpcart();
+		model.addAttribute(spcart);
+		return "cart_list";
+	}
 	
 	
 	@GetMapping("/add/{id}")
 	public void addCart(@Valid SpCartForm spCartForm,BindingResult bindingResult,
 			@ModelAttribute("product") Product product,
 			@ModelAttribute("quantity") Long quantity,
-			Model model, @PathVariable("id") Long id){
-		SpUser user = this.spUserService.findbyId(id);
+			Model model, @PathVariable("id") Long id,
+			Principal principal){
+		String name = principal.getName();
+		SpUser user = this.spUserService.findbyUsername(name);
 		SpCart spcart = user.getSpcart();
-		Long productid = product.getId();
+		
 		// 앞에는 브라우저에서 제품ID받아서 제품넣고, 뒤에는 수량 받아서 수량 넣어야함
 		// 현재 로그인 하고있는 사람 ID 받아와야함
 		// TODO 고쳐야함
-		spcart.cartList.put(productid, quantity);
+		spcart.cartList.put(product, quantity);
 	}
 	@DeleteMapping("/delete/{id}")
-	public void deleteCart(@PathVariable("id") Long id) {
-		SpUser user = this.spUserService.findbyId(id);
+	public void deleteCart(@PathVariable("id") Long id, Principal principal) {
+		String name = principal.getName();
+		SpUser user = this.spUserService.findbyUsername(name);
 		SpCart spcart = user.getSpcart();
 		Long cartid = spcart.getId();
 		this.spCartService.delete(cartid);

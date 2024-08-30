@@ -1,6 +1,6 @@
 package com.example.mini.dto;
 
-import com.example.mini.entity.SpOrderDetail;
+
 import com.example.mini.entity.SpUser;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

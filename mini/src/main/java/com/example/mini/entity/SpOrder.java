@@ -1,7 +1,12 @@
 package com.example.mini.entity;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
+import com.example.mini.config.OrderStatus;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -27,14 +32,11 @@ public class SpOrder {
 		@Id
 		@GeneratedValue(strategy = GenerationType.IDENTITY)
 		private Integer id;
+		public HashMap<Long, Long> orderList;
+		private OrderStatus status=OrderStatus.READY;
+		private String request;
 		@ManyToOne
 		private SpUser spuser;
-		@OneToOne(cascade = CascadeType.PERSIST)
-		private SpCart spcart;
-		@OneToOne(cascade = CascadeType.REMOVE)
-		private SpOrderDetail spOrderDetail;
-		private LocalDateTime create_date;
-		
 		
 		
 

@@ -50,5 +50,13 @@ public class SpUserService {
 		throw new DataNotFoundException("user not found");
 	}
 
+	public SpUser findbyUsername(String name) {
+		Optional<SpUser> user = this.spUserRepository.findByUsername(name);
+		if(user.isPresent()) {
+			return user.get();
+		}
+		throw new DataNotFoundException("user not found");
+	}
+
 	
 }

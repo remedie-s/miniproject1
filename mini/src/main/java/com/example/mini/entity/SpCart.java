@@ -38,7 +38,7 @@ public class SpCart {
 		@OneToOne
 		private SpOrder sporder;
 		
-		public HashMap<Long, Long> cartList = new HashMap<Long, Long>();
+		public HashMap<Product, Long> cartList = new HashMap<Product, Long>();
 		
 		
 }
