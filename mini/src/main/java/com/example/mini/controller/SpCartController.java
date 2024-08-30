@@ -3,6 +3,7 @@ package com.example.mini.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,9 +39,11 @@ public class SpCartController {
 		SpCart spcart = user.getSpcart();
 		Long productid = product.getId();
 		// 앞에는 브라우저에서 제품ID받아서 제품넣고, 뒤에는 수량 받아서 수량 넣어야함
+		// 현재 로그인 하고있는 사람 ID 받아와야함
+		// TODO 고쳐야함
 		spcart.cartList.put(productid, quantity);
 	}
-	@GetMapping("/delete/{id}")
+	@DeleteMapping("/delete/{id}")
 	public void deleteCart(@PathVariable("id") Long id) {
 		SpUser user = this.spUserService.findbyId(id);
 		SpCart spcart = user.getSpcart();

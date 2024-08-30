@@ -12,10 +12,9 @@ public class MainController {
 		return "main";
 	}
 	@RequestMapping("/")
-	@ResponseBody
 	public String login() {
 		
-		return "로그인성공";
+		return "index";
 	}
 
 }

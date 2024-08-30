@@ -6,9 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 
@@ -60,15 +62,16 @@ public class SpAddressController {
 	}
 	
 	@GetMapping("/modify/{id}")
-	public String AddressModify(SpAddressForm spAddressForm, @PathVariable("id") Long id) {
+	public String AddressModify(Model model, SpAddressForm spAddressForm, @PathVariable("id") Long id) {
 		SpAddress spAddress = this.spAddressService.selectOneAddress(id);
 		spAddressForm.setBuilding_number(spAddress.getBuilding_number());
 		spAddressForm.setStreet_name(spAddress.getStreet_name());
 		spAddressForm.setDetail_address(spAddress.getDetail_address());
 		spAddressForm.setCity(spAddress.getCity());
+		model.addAttribute("method", "put");
 		return "address_form";
 	}
-	@PostMapping("/modify/{id}")
+	@PutMapping("/modify/{id}")
 	public String AddressModify(@Valid SpAddressForm spAddressForm, BindingResult bindingResult, @PathVariable("id") Long id) {
 		if(bindingResult.hasErrors()) {
 		return "address_form";
@@ -81,11 +84,11 @@ public class SpAddressController {
 		this.spAddressService.modify(spAddress);
 		return "redirect:/address/list";
 	}
-	@GetMapping("/delete/{id}")
+	@DeleteMapping("/delete/{id}")
 	public String AddressDelete(@PathVariable("id") Long id) {
 		SpAddress spAddress = this.spAddressService.selectOneAddress(id);
 		this.spAddressService.delete(spAddress);
-		return "redirect:/spuser/";
+		return "redirect:/address/list";
 	}
 
 }
