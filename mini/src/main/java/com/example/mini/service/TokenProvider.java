@@ -1,7 +1,6 @@
 package com.example.mini.service;
 
 import java.time.Duration;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Optional;
@@ -31,20 +30,19 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class TokenProvider {
-	
+
 	private final JwtProperties jwtProperties;
-	
+
 	private final RefreshTokenRepository refreshTokenRepository;
-	
+
 	public String geneateToken(SpUser user, Duration expriedAt) {
 		Date now = new Date();
-		return createToken(new Date(now.getTime()+expriedAt.toMillis()), user);
+		return createToken(new Date(now.getTime() + expriedAt.toMillis()), user);
 	}
 
 	private String createToken(Date expriry, SpUser user) {
 		Date now = new Date();
-		
-		
+
 		return Jwts.builder()
 				.setHeaderParam(Header.TYPE, Header.JWT_TYPE)
 				.setIssuer(jwtProperties.getIssuer())
@@ -52,17 +50,17 @@ public class TokenProvider {
 				.setExpiration(expriry)
 				.setSubject(user.getE_mail())
 				.claim("id", user.getId())
-				.signWith(SignatureAlgorithm.HS256,jwtProperties.getSecretKey())
+				.signWith(SignatureAlgorithm.HS256, jwtProperties.getSecretKey())
 				.compact();
-								
+
 	}
 
 	public boolean isVaildToken(String token) {
 		try {
 			Jwts.parser()
-				.setSigningKey(jwtProperties.getSecretKey())
-				.parseClaimsJws(token);
-				return true;
+					.setSigningKey(jwtProperties.getSecretKey())
+					.parseClaimsJws(token);
+			return true;
 		} catch (SignatureException e) {
 			e.printStackTrace();
 			return false;
@@ -80,33 +78,34 @@ public class TokenProvider {
 			return false;
 		}
 	}
-	
+
 	public Long getUserId(String token) {
 		Claims claims = getClaims(token);
-		return claims.get("id",Long.class);
+		return claims.get("id", Long.class);
 	}
 
 	private Claims getClaims(String token) {
 		return Jwts.parser()
 				.setSigningKey(jwtProperties.getSecretKey())
 				.parseClaimsJws(token)
-				.getBody()
-				;
+				.getBody();
 	}
 
 	public Authentication getAuthentication(String token) {
 		Claims claims = getClaims(token);
-		Set<SimpleGrantedAuthority> authorities = Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")); //TODO 고쳐야함 하나만들어갈수있나?
+		Set<SimpleGrantedAuthority> authorities = Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")); // TODO
+																													// 고쳐야함
+																													// 하나만들어갈수있나?
 		return new UsernamePasswordAuthenticationToken(
-				new User(claims.getSubject(),"", authorities),
+				new User(claims.getSubject(), "", authorities),
 				token,
-				authorities
-				);
+				authorities);
 	}
+
 	// 리프레시 토큰 유효성
 	public boolean isValidRefreshToken(String refreshToken) {
-		Optional<RefreshToken> opt =this.refreshTokenRepository.findByRefreshToken(refreshToken);
-		if(opt.isPresent()) {
+		Optional<RefreshToken> opt = this.refreshTokenRepository.findByRefreshToken(refreshToken);
+		if (opt.isPresent()) {
 			return true;
 		}
 		return false;

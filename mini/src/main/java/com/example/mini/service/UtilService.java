@@ -11,8 +11,8 @@ import jakarta.servlet.http.HttpServletResponse;
 public class UtilService {
 
 	public int toSecondOfDay(int day) {
-		
-		return 60*60*24*day;
+
+		return 60 * 60 * 24 * day;
 	}
 
 	public void setCookie(String key, String value, int expiration, HttpServletResponse response) {
@@ -22,16 +22,16 @@ public class UtilService {
 		cookie.setPath("/");
 		response.addCookie(cookie);
 	}
-	
+
 	public MediaType getMediaType(ServletContext servletContext, String filename) {
 		try {
-			String  mimeType = servletContext.getMimeType(filename);
+			String mimeType = servletContext.getMimeType(filename);
 			MediaType mediaType = MediaType.parseMediaType(mimeType);
 			return mediaType;
 		} catch (Exception e) {
 			return MediaType.APPLICATION_OCTET_STREAM;
 		}
-		
+
 	}
 
 }

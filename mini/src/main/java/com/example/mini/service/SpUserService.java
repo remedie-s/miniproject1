@@ -18,8 +18,6 @@ import lombok.RequiredArgsConstructor;
 public class SpUserService {
 	private final SpUserRepository spUserRepository;
 	private final PasswordEncoder passwordEncoder;
-	
-	
 
 	public SpUser create(String username, String password, String first_name, String last_name,
 			String phone_number, String e_mail) {
@@ -31,7 +29,7 @@ public class SpUserService {
 		user.setPhone_number(phone_number);
 		user.setE_mail(e_mail);
 		user.setSpuser_grade(SpUserGrade.BRONZE);
-		user.setAddressList(null);//TODO AddressList 고쳐야함
+		user.setAddressList(null);// TODO AddressList 고쳐야함
 		user.setCreate_date(LocalDateTime.now());
 		try {
 			this.spUserRepository.save(user);
@@ -44,7 +42,7 @@ public class SpUserService {
 
 	public SpUser findbyId(Long userId) {
 		Optional<SpUser> spuser = this.spUserRepository.findById(userId);
-		if(spuser.isPresent()) {
+		if (spuser.isPresent()) {
 			return spuser.get();
 		}
 		throw new DataNotFoundException("user not found");
@@ -52,11 +50,10 @@ public class SpUserService {
 
 	public SpUser findbyUsername(String name) {
 		Optional<SpUser> user = this.spUserRepository.findByUsername(name);
-		if(user.isPresent()) {
+		if (user.isPresent()) {
 			return user.get();
 		}
 		throw new DataNotFoundException("user not found");
 	}
 
-	
 }

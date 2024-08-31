@@ -11,6 +11,7 @@ import com.example.mini.exception.DataNotFoundException;
 import com.example.mini.repository.ProductRepository;
 
 import lombok.RequiredArgsConstructor;
+
 @RequiredArgsConstructor
 @Service
 public class ProductService {
@@ -35,18 +36,18 @@ public class ProductService {
 
 	public Product selectOneProduct(long id) {
 		Optional<Product> product = this.productRepository.findById(id);
-		if(product.isPresent()) {
+		if (product.isPresent()) {
 			return product.get();
 		}
 		throw new DataNotFoundException("product not found");
 	}
-	
+
 	public void delete(Product product) {
 		this.productRepository.delete(product);
 	}
+
 	public void modify(Product product) {
 		this.productRepository.save(product);
 	}
-	
 
 }

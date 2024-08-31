@@ -1,15 +1,6 @@
 package com.example.mini.dto;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
-import com.example.mini.entity.Review;
-
 import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
@@ -22,7 +13,7 @@ import lombok.Setter;
 public class ProductForm {
 	@Transient
 	private Integer id;
-	
+
 	@Column(length = 50)
 	@NotEmpty(message = "물품 이름은 비어선 안됩니다.")
 	private String product_name;
@@ -35,16 +26,15 @@ public class ProductForm {
 	private String product_quantity;
 	@NotEmpty(message = "이미지 주소는 비어선 안됩니다.")
 	private String image_url;
-	
-	public ProductForm(String product_name,String description,Long product_price,String product_quantity,String image_url) {
+
+	public ProductForm(String product_name, String description, Long product_price, String product_quantity,
+			String image_url) {
 		super();
 		this.product_name = product_name;
 		this.description = description;
 		this.product_price = product_price;
 		this.product_quantity = product_quantity;
 		this.image_url = image_url;
-	} 
-	
-	
-	
+	}
+
 }

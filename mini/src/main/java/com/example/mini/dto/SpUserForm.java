@@ -1,16 +1,17 @@
 package com.example.mini.dto;
 
-
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class SpUserForm {
-	@Size(min=3, max = 32)
+	@Size(min = 3, max = 32)
 	@NotEmpty(message = "아이디를 입력하세요")
 	private String username;
 	@NotEmpty(message = "비밀번호를 입력하세요")
@@ -26,7 +27,5 @@ public class SpUserForm {
 	@NotEmpty(message = "이메일을 입력하세요")
 	@Email
 	private String e_mail;
-	
-	
 
 }

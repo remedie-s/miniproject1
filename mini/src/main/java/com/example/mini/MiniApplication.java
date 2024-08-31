@@ -3,7 +3,8 @@ package com.example.mini;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.transaction.annotation.Transactional;
-@Transactional 
+
+@Transactional
 @SpringBootApplication
 public class MiniApplication {
 

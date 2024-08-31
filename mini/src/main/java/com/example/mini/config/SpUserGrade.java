@@ -9,13 +9,12 @@ public enum SpUserGrade {
 	SILVER("ROLE_USER"),
 	BRONZE("ROLE_USER"),
 	SELLER("ROLE_SELLER");
-	//TODO 롤 구분해야하나 고민
+
+	// TODO 롤 구분해야하나 고민
 	SpUserGrade(String value) {
-		this.value=value;
+		this.value = value;
 	}
+
 	private String value;
-	
-	
 
 }
-

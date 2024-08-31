@@ -6,6 +6,4 @@ import com.example.mini.entity.SpCart;
 
 public interface SpCartRepository extends JpaRepository<SpCart, Long> {
 
-	
-
 }

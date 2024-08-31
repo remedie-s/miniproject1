@@ -16,22 +16,23 @@ import com.example.mini.repository.QnA_PostRepository;
 public class QnA_PostService {
 	@Autowired
 	private QnA_PostRepository qnA_PostRepository;
-	
+
 	public List<QnA_Post> getAllPost() {
 		List<QnA_Post> list = this.qnA_PostRepository.findAll();
 		return list;
 	}
-	
+
 	public QnA_Post getOnePost(Integer id) {
 		Optional<QnA_Post> oqpost = this.qnA_PostRepository.findById(id);
-		if(oqpost.isPresent()) {
+		if (oqpost.isPresent()) {
 			return oqpost.get();
 		}
 		throw new DataNotFoundException("post not found");
 	}
+
 	public QnAPostForm getOnePostForm(Integer id) {
 		Optional<QnA_Post> oqpost = this.qnA_PostRepository.findById(id);
-		if(oqpost.isPresent()) {
+		if (oqpost.isPresent()) {
 			QnA_Post qnA_Post = oqpost.get();
 			return QnAPostForm.builder()
 					.subject(qnA_Post.getSubject())
@@ -40,7 +41,7 @@ public class QnA_PostService {
 		}
 		throw new DataNotFoundException("post not found");
 	}
-	
+
 	public void create(String subject, String content) {
 		QnA_Post qnA_Post = new QnA_Post();
 		qnA_Post.setSubject(subject);
@@ -48,17 +49,13 @@ public class QnA_PostService {
 		qnA_Post.setCreate_date(LocalDateTime.now());
 	}
 
-	
-
 	public void modify(QnA_Post qnA_Post) {
 		this.qnA_PostRepository.save(qnA_Post);
-		
+
 	}
 
 	public void delete(QnA_Post qnA_Post) {
 		this.qnA_PostRepository.delete(qnA_Post);
 	}
-
-	
 
 }

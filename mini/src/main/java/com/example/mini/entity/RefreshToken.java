@@ -15,26 +15,26 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 public class RefreshToken {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="spuserid", updatable =false)
+	@Column(name = "spuserid", updatable = false)
 	private long spuserid;
-	
+
 	@Column(nullable = false)
 	private String refreshToken;
-	
+
 	private LocalDateTime createdate;
-	
+
 	public RefreshToken(long spuserid, String refreshToken) {
 		super();
 		this.spuserid = spuserid;
 		this.refreshToken = refreshToken;
 		this.createdate = LocalDateTime.now();
 	}
-	
+
 	public RefreshToken update(String newRefreshToken) {
-		this.refreshToken=newRefreshToken;
+		this.refreshToken = newRefreshToken;
 		return this;
 	}
 

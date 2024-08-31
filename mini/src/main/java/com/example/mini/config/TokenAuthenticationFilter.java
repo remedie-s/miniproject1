@@ -47,8 +47,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 		if (tokenProvider.isVaildToken(accessToken)) {
 			System.out.println("유효한 토큰");
 			filterChain.doFilter(request, response);
-		} 
-		else {
+		} else {
 			System.out.println("유효하지 않은 토큰");
 			if (!tokenProvider.isVaildToken(refreshToken)) {
 				System.out.println("리프레시토큰 문제 발생");

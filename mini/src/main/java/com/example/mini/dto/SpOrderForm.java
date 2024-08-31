@@ -1,28 +1,26 @@
 package com.example.mini.dto;
 
-import java.time.LocalDateTime;
 import java.util.HashMap;
 
 import com.example.mini.config.OrderStatus;
-import com.example.mini.entity.SpCart;
-import com.example.mini.entity.SpUser;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotEmpty;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
+@NoArgsConstructor
 public class SpOrderForm {
-	
-	private Integer id;
-	@NotEmpty
+	@Transient
+	private Long id;
+	@NotEmpty(message = "주문 내용은 비어선 안됩니다.")
 	public HashMap<Long, Long> orderList = new HashMap<Long, Long>();
-	@NotEmpty
+	@NotEmpty(message = "주문상황은 비어선 안됩니다.")
 	private OrderStatus status;
-	@NotEmpty
+	@NotEmpty(message = "요구사항은 비어선 안됩니다.")
 	private String request;
 
 }
