@@ -1,5 +1,14 @@
+<!DOCTYPE html>
 <html layout:decorate="~{lib/layout}">
 
 <div class="wrapper" layout:fragmnet="content">
-<div th:replace="lib/preloader.html :: frag_preloader"></div>
+    <div th:replace="~{lib/preloader.html :: sagment_preloader}"></div>
+    <div th:replace="~{lib/naviber.html :: sagment_navibar}"></div>
+    <div th:replace="~{lib/left.html :: sagment_left}"></div>
+    <!-- Content Wrapper. Contains page content -->
+    <h1>메인페이지</h1>
+    <div th:replace="~{lib/right_sidebar.html :: sagment_aside}"></div>
+    <div th:replace="~{lib/footer.html :: sagment_footer}"></div>
 </div>
+
+</html>

@@ -46,7 +46,7 @@ public class SecurityConfig {
 
 				.formLogin((formLogin) -> formLogin
 						.loginPage("/spuser/login")
-						.defaultSuccessUrl("/"))
+						.defaultSuccessUrl("/index"))
 
 				.logout((logout) -> logout
 						.logoutRequestMatcher(new AntPathRequestMatcher("/spuser/logout"))
