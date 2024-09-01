@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.mini.dto.QnAPostForm;
+import com.example.mini.dto.QnAReveiwForm;
 import com.example.mini.entity.QnA_Post;
 import com.example.mini.service.QnA_PostService;
 
@@ -31,6 +32,14 @@ public class QnA_PostController {
 
 		model.addAttribute("posts", posts);
 		return "qna_post_list";
+	}
+
+	@GetMapping("/detail/{id}")
+	public String detail(Model model, @PathVariable("id") Integer id,
+			QnAReveiwForm reviewForm) {
+		QnA_Post post = this.qnA_PostService.getOnePost(id);
+		model.addAttribute("post", post);
+		return "qna_post_detail";
 	}
 
 	@GetMapping("/create")

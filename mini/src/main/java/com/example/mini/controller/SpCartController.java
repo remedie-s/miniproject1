@@ -28,6 +28,20 @@ public class SpCartController {
 	private final SpCartService spCartService;
 	private final SpUserService spUserService;
 
+	@GetMapping("/list")
+	public String list(@Valid SpCartForm spCartForm, BindingResult bindingResult, Model model,
+			Principal principal) {
+		// PathVariable 있어야할까?
+		String name = principal.getName();
+		SpUser user = this.spUserService.findbyUsername(name);
+		SpCart spcart = user.getSpcart();
+		long id = user.getId();
+		model.addAttribute(spcart);
+		// 키값하고 밸류값 따로 ArrayList로 보내는게 나을까?
+
+		return "redirect:/cart/list/" + id;
+	}
+
 	@GetMapping("/list/{id}")
 	public String list(@Valid SpCartForm spCartForm, BindingResult bindingResult, Model model,
 			@PathVariable("id") Long id, Principal principal) {

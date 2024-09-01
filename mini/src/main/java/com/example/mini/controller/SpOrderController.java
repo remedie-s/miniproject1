@@ -32,18 +32,27 @@ public class SpOrderController {
 	private final SpOrderService spOrderService;
 
 	@GetMapping("/list")
+	public String orderList(Principal principal) {
+		String name = principal.getName();
+		SpUser user = spUserService.findbyUsername(name);
+		long id = user.getId();
+		return "redirect:/order/list/" + id;
+	}
+
+	@GetMapping("/list/{id}")
 	public String orderList(Model model, @PathVariable("id") Long id, Principal principal) {
 		String name = principal.getName();
 		SpUser user = spUserService.findbyUsername(name);
 		List<SpOrder> ordersList = user.getOrdersList();
 		model.addAttribute("orderList", ordersList);
+
 		return "order_list";
 	}
 
 	@GetMapping("/detail/{id}")
 	public String orderdetail(Model model, @PathVariable("id") Long id, SpOrderForm spOrderForm) {
 		SpOrder order = this.spOrderService.getOneOrder(id);
-		model.addAttribute("order", order);
+		// model.addAttribute("order", order);
 		return "order_detail";
 	}
 
@@ -56,7 +65,7 @@ public class SpOrderController {
 		SpCart spcart = user.getSpcart();
 		// 카트 사이즈확인(비어있는지 확인 사이즈)
 		if (spcart.getCartList().size() >= 1) {
-			model.addAttribute("method", "post");
+			// model.addAttribute("method", "post");
 			return "order_form";
 		}
 		// 카트 비었을 때 카트가 비었다고 메시지?

@@ -14,7 +14,7 @@
                 <img src="/dist/img/flower-1.jpg" class="img-circle elevation-2" alt="User Image">
             </div>
             <div class="info">
-                <a href="#" class="d-block">사용자명</a>
+                <a href="#" class="d-block" th:text="${name}"></a>
             </div>
         </div>
 
@@ -38,6 +38,13 @@
                         <i class="nav-icon fas fa-th"></i>
                         <p>
                             주문 확인
+                        </p>
+                    </a>
+                    
+                    <a href="/cart/list" class="nav-link">
+                        <i class="nav-icon fas fa-th"></i>
+                        <p>
+                            카트 확인
                         </p>
                     </a>
 
