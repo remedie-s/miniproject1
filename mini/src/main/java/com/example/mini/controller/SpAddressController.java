@@ -1,5 +1,6 @@
 package com.example.mini.controller;
 
+import java.security.Principal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,15 +31,20 @@ public class SpAddressController {
 	private SpUserService spUserService;
 
 	@GetMapping("/list/{id}")
-	public String list(Model model, @PathVariable("id") Long id) {
-		SpUser user = this.spUserService.findbyId(id);
+	public String list(Model model, @PathVariable("id") Long id, Principal principal) {
+		String name = principal.getName();
+		SpUser user = spUserService.findbyUsername(name);
+		id = user.getId();
 		List<SpAddress> addressList = user.getAddressList();
 		model.addAttribute(addressList);
 		return "address_list";
 	}
 
 	@GetMapping("/create/{id}")
-	public String AddressCreate(Model model, @PathVariable("id") Long id) {
+	public String AddressCreate(Model model, @PathVariable("id") Long id, Principal principal) {
+		String name = principal.getName();
+		SpUser user = spUserService.findbyUsername(name);
+		id = user.getId();
 		model.addAttribute("method", "post");
 		return "address_form";
 
@@ -46,19 +52,25 @@ public class SpAddressController {
 
 	@PostMapping("/create/{id}")
 	public String AddressCreate(@Valid SpAddressForm spAddressForm, BindingResult bindingResult,
-			Model model, @PathVariable("id") Long id) {
-		SpUser spuser = this.spUserService.findbyId(id);
+			Model model, @PathVariable("id") Long id, Principal principal) {
+		String name = principal.getName();
+		SpUser user = spUserService.findbyUsername(name);
+		id = user.getId();
 		if (bindingResult.hasErrors()) {
-			model.addAttribute("spuser", spuser);
+			model.addAttribute("user", user);
 			return "address_list";
 		}
-		this.spAddressService.create(spuser, spAddressForm.getBuilding_number(), spAddressForm.getStreet_name(),
+		this.spAddressService.create(user, spAddressForm.getBuilding_number(), spAddressForm.getStreet_name(),
 				spAddressForm.getDetail_address(), spAddressForm.getCity());
 		return "address_list";
 	}
 
 	@GetMapping("/modify/{id}")
-	public String AddressModify(Model model, SpAddressForm spAddressForm, @PathVariable("id") Long id) {
+	public String AddressModify(Model model, SpAddressForm spAddressForm, @PathVariable("id") Long id,
+			Principal principal) {
+		String name = principal.getName();
+		SpUser user = spUserService.findbyUsername(name);
+		id = user.getId();
 		SpAddress spAddress = this.spAddressService.selectOneAddress(id);
 		spAddressForm.setBuilding_number(spAddress.getBuilding_number());
 		spAddressForm.setStreet_name(spAddress.getStreet_name());

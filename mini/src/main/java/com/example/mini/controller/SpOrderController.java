@@ -30,7 +30,6 @@ import lombok.RequiredArgsConstructor;
 public class SpOrderController {
 	private final SpUserService spUserService;
 	private final SpOrderService spOrderService;
-	private final SpCart spcart;
 
 	@GetMapping("/list")
 	public String orderList(Model model, @PathVariable("id") Long id, Principal principal) {
