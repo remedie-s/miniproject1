@@ -1,6 +1,7 @@
 package com.example.mini.dto;
 
 import jakarta.persistence.Transient;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +16,7 @@ public class SpAddressForm {
 	private Integer id;
 	@NotEmpty(message = "도로명을 입력하세요.")
 	private String street_name;
-	@NotEmpty(message = "건물번호를 입력하세요.")
+	@Min(1)
 	private Integer building_number;
 	@NotEmpty(message = "상세주소를 입력하세요.")
 	private String detail_address;

@@ -8,11 +8,9 @@ import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 @Getter
 @Setter
-@ToString
 @Entity
 @NoArgsConstructor
 public class SpAddress {
@@ -26,6 +24,13 @@ public class SpAddress {
 	private Integer building_number;
 	private String detail_address;
 	private String city;
-	private String region = "한국";
+
+	public SpAddress(SpUser spuser, String street_name, Integer building_number, String detail_address, String city) {
+		this.spuser = spuser;
+		this.street_name = street_name;
+		this.building_number = building_number;
+		this.detail_address = detail_address;
+		this.city = city;
+	}
 
 }

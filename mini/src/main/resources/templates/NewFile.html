@@ -1,10 +1,29 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-</head>
-<body>
-
-</body>
-</html>
+<div class="login-box"  style="margin-left: 400px; ">
+    <div class="login-logo">
+        <a href="#"><b>미니프로젝트</b>쇼핑몰</a>
+    </div>
+    <div class="card">
+        <div class="card-body login-card-body">
+            <p class="login-box-msg">주소 등록</p>
+            <form method="post" th:object="${spAddressForm}" th:action="@{/address/create}">
+                <div class="input-group mb-3">
+                    <input type="text" id="street_name" th:field="*{street_name}" class="form-control" placeholder="도로명">
+                </div>
+                <div class="input-group mb-3">
+                    <input type="text" id="building_number" th:field="*{building_number}" class="form-control" placeholder="건물번호">
+                </div>
+                <div class="input-group mb-3">
+                    <input type="text" id="detail_address" th:field="*{detail_address}" class="form-control" placeholder="상세주소">
+                </div>
+                <div class="input-group mb-3">
+                    <input type="text" id="city" th:field="*{city}" class="form-control" placeholder="시,도">
+                </div>
+                <div class="input-group mb-3">
+                    <input type="reset" value="초기화" class="btn btn-warning">
+                    &nbsp;
+                    <input type="submit" value="물건 등록" class="btn btn-warning">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

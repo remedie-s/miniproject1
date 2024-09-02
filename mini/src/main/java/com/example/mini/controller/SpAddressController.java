@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,9 +14,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.mini.dto.SpAddressForm;
-import com.example.mini.dto.SpOrderForm;
 import com.example.mini.entity.SpAddress;
-import com.example.mini.entity.SpOrder;
 import com.example.mini.entity.SpUser;
 import com.example.mini.service.SpAddressService;
 import com.example.mini.service.SpUserService;
@@ -31,63 +28,58 @@ public class SpAddressController {
 	private SpAddressService spAddressService;
 	@Autowired
 	private SpUserService spUserService;
-@GetMapping("/list")
-	public String orderList(Principal principal) {
+
+	@GetMapping("/list")
+	public String addressList(Principal principal) {
 		String name = principal.getName();
 		SpUser user = spUserService.findbyUsername(name);
 		long id = user.getId();
-		return "redirect:/order/list/" + id;
+		return "redirect:/address/list/" + id;
 	}
 
 	@GetMapping("/list/{id}")
-	public String orderList(Model model, @PathVariable("id") Long id, Principal principal) {
+	public String addressList(Model model, @PathVariable("id") Long id, Principal principal) {
 		String name = principal.getName();
 		SpUser user = spUserService.findbyUsername(name);
-		List<SpOrder> ordersList = user.getOrdersList();
-		model.addAttribute("orderList", ordersList);
-
-		return "order_list";
-	}
-
-	@GetMapping("/detail/{id}")
-	public String orderdetail(Model model, @PathVariable("id") Long id, SpOrderForm spOrderForm) {
-		SpOrder order = this.spOrderService.getOneOrder(id);
-		// model.addAttribute("order", order);
-		return "order_detail";
-	}
-	//TODO 고쳐야함
-	@GetMapping("/list/{id}")
-	public String list(Model model, @PathVariable("id") Long id, Principal principal) {
-		String name = principal.getName();
-		SpUser user = spUserService.findbyUsername(name);
-		id = user.getId();
-		List<SpAddress> addressList = user.getAddressList();
-		model.addAttribute(addressList);
+		List<SpAddress> addresslist = user.getAddressList();
+		model.addAttribute("addresslist", addresslist);
 		return "address_list";
 	}
 
-	@GetMapping("/create/{id}")
-	public String AddressCreate(Model model, @PathVariable("id") Long id, Principal principal) {
+	@GetMapping("/detail/{id}")
+	public String addressdetail(Model model, @PathVariable("id") Long id, SpAddressForm spAddressForm) {
+		SpAddress address = this.spAddressService.getoneAddress(id);
+		// model.addAttribute("address", address);
+		return "address_detail"+id;
+	}
+	
+
+	@GetMapping("/create")
+	public String AddressCreate(SpAddressForm spAddressForm, Principal principal, Model model) {
 		String name = principal.getName();
 		SpUser user = spUserService.findbyUsername(name);
-		id = user.getId();
-		model.addAttribute("method", "post");
-		return "address_form";
-
+		Long id = user.getId();
+		model.addAttribute("spAddressForm", new SpAddressForm());
+		return "addressform";
 	}
 
-	@PostMapping("/create/{id}")
+	@PostMapping("/create")
 	public String AddressCreate(@Valid SpAddressForm spAddressForm, BindingResult bindingResult,
-			Model model, @PathVariable("id") Long id, Principal principal) {
+			Model model,  Principal principal) {
 		String name = principal.getName();
+		System.out.println("1");
 		SpUser user = spUserService.findbyUsername(name);
-		id = user.getId();
+		Long id = user.getId();
+		//같은지 검증할까?
+		SpAddress address;
 		if (bindingResult.hasErrors()) {
 			model.addAttribute("user", user);
 			return "address_list";
 		}
-		this.spAddressService.create(user, spAddressForm.getBuilding_number(), spAddressForm.getStreet_name(),
+		System.out.println("2");
+		address = this.spAddressService.create(user, spAddressForm.getStreet_name(), spAddressForm.getBuilding_number(), 
 				spAddressForm.getDetail_address(), spAddressForm.getCity());
+				System.out.println("3");
 		return "address_list";
 	}
 
@@ -121,7 +113,7 @@ public class SpAddressController {
 		return "redirect:/address/list";
 	}
 
-	@DeleteMapping("/delete/{id}")
+	@GetMapping("/delete/{id}")
 	public String AddressDelete(@PathVariable("id") Long id) {
 		SpAddress spAddress = this.spAddressService.selectOneAddress(id);
 		this.spAddressService.delete(spAddress);

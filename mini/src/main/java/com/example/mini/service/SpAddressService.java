@@ -20,11 +20,12 @@ import com.example.mini.repository.SpAddressRepository;
 public class SpAddressService {
 	@Autowired
 	private SpAddressRepository spAddressRepository;
+
 	public List<SpAddress> getAllSpAddress(){
 		return this.spAddressRepository.findAll();
 	};
 
-	public void create(SpUser spuser, Integer building_number, String street_name, String detail_address, String city) {
+	public SpAddress create(SpUser spuser, String street_name, Integer building_number,  String detail_address, String city) {
 		SpAddress spAddress = new SpAddress();
 		spAddress.setBuilding_number(building_number);
 		spAddress.setStreet_name(street_name);
@@ -32,6 +33,7 @@ public class SpAddressService {
 		spAddress.setCity(city);
 		spAddress.setSpuser(spuser);
 		this.spAddressRepository.save(spAddress);
+		return spAddress;
 	} 
 	
 	public void modify(SpAddress spAddress) {
@@ -50,6 +52,15 @@ public class SpAddressService {
 		}
 		throw new DataNotFoundException("해당 주소 번호가 없습니다");
 	}
+
+    public SpAddress getoneAddress(Long id) {
+		Optional<SpAddress> opad = this.spAddressRepository.findById(id);
+		if (opad.isPresent()) {
+			return opad.get();
+			
+		}
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 	
 	
 
