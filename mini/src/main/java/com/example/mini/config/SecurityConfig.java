@@ -34,6 +34,8 @@ public class SecurityConfig {
 				.authorizeHttpRequests((a) -> a.requestMatchers(new AntPathRequestMatcher("/qna/review/**"))
 						.hasAnyRole("SELLER", "ADMIN"))
 				.authorizeHttpRequests((a) -> a.requestMatchers(new AntPathRequestMatcher("/product/**")).permitAll())
+				.authorizeHttpRequests(
+						(a) -> a.requestMatchers(new AntPathRequestMatcher("/product/detail/**")).permitAll())
 				.authorizeHttpRequests((a) -> a.requestMatchers(new AntPathRequestMatcher("/sporder/**")).permitAll())
 				.authorizeHttpRequests((a) -> a.requestMatchers(new AntPathRequestMatcher("/dist/**")).permitAll())
 				.authorizeHttpRequests((a) -> a.requestMatchers(new AntPathRequestMatcher("/plugins/**")).permitAll())
