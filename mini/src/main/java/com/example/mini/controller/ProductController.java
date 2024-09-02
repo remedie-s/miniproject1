@@ -6,7 +6,6 @@ import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,8 +28,11 @@ public class ProductController {
 
 	@GetMapping("/list")
 	public String list(Model model) {
-		List<Product> products = this.productService.getAllProduct();
-		model.addAttribute("products", products);
+		List<Product> productslist = this.productService.getAllProduct();
+		model.addAttribute("productslist", productslist);
+		// for (Product product : productslist) {
+		// System.out.println(product);
+		// }
 		return "product_list";
 	}
 
@@ -43,12 +45,12 @@ public class ProductController {
 	}
 
 	@GetMapping("/create")
-	public String create(ProductForm productform,Principal principal,Model model) {
+	public String create(ProductForm productform, Principal principal, Model model) {
 		String name = principal.getName();
 		model.addAttribute("name", name);
-		if(name.equals("seller")||name.equals("admin")){
-		return "product_form";}
-		else{
+		if (name.equals("seller") || name.equals("admin")) {
+			return "product_form";
+		} else {
 			System.out.println("권한이 없는 사용자입니다.");
 			return "index";
 		}
@@ -62,8 +64,8 @@ public class ProductController {
 			return "product_form";
 		}
 		Product product;
-		
-		product=this.productService.create(productForm.getProduct_name(), productForm.getDescription(),
+
+		product = this.productService.create(productForm.getProduct_name(), productForm.getDescription(),
 				productForm.getProduct_price(), productForm.getProduct_quantity(), productForm.getImage_url());
 		System.out.println("물품등록 완료");
 
@@ -104,10 +106,15 @@ public class ProductController {
 		return "redirect:/product/detail/" + id;
 	}
 
-	@DeleteMapping("/delete/{id}")
-	public String delete(@PathVariable("id") long id) {
-		Product product = this.productService.selectOneProduct(id);
-		this.productService.delete(product);
+	@GetMapping("/delete/{id}")
+	public String delete(@PathVariable("id") long id, Principal principal) {
+		if (principal.getName().equals("admin") || principal.getName().equals("seller")) {
+			Product product = this.productService.selectOneProduct(id);
+			this.productService.delete(product);
+			System.out.println("삭제 성공");
+			return "redirect:/product/list";
+		}
+		System.out.println("권한없는 사용자입니다");
 		return "redirect:/product/list";
 	}
 
