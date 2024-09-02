@@ -43,8 +43,9 @@ public class ProductController {
 	}
 
 	@GetMapping("/create")
-	public String create(ProductForm productform,Principal principal) {
+	public String create(ProductForm productform,Principal principal,Model model) {
 		String name = principal.getName();
+		model.addAttribute("name", name);
 		if(name.equals("seller")||name.equals("admin")){
 		return "product_form";}
 		else{

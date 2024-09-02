@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.mini.dto.SpAddressForm;
+import com.example.mini.dto.SpOrderForm;
 import com.example.mini.entity.SpAddress;
+import com.example.mini.entity.SpOrder;
 import com.example.mini.entity.SpUser;
 import com.example.mini.service.SpAddressService;
 import com.example.mini.service.SpUserService;
@@ -29,7 +31,31 @@ public class SpAddressController {
 	private SpAddressService spAddressService;
 	@Autowired
 	private SpUserService spUserService;
+@GetMapping("/list")
+	public String orderList(Principal principal) {
+		String name = principal.getName();
+		SpUser user = spUserService.findbyUsername(name);
+		long id = user.getId();
+		return "redirect:/order/list/" + id;
+	}
 
+	@GetMapping("/list/{id}")
+	public String orderList(Model model, @PathVariable("id") Long id, Principal principal) {
+		String name = principal.getName();
+		SpUser user = spUserService.findbyUsername(name);
+		List<SpOrder> ordersList = user.getOrdersList();
+		model.addAttribute("orderList", ordersList);
+
+		return "order_list";
+	}
+
+	@GetMapping("/detail/{id}")
+	public String orderdetail(Model model, @PathVariable("id") Long id, SpOrderForm spOrderForm) {
+		SpOrder order = this.spOrderService.getOneOrder(id);
+		// model.addAttribute("order", order);
+		return "order_detail";
+	}
+	//TODO 고쳐야함
 	@GetMapping("/list/{id}")
 	public String list(Model model, @PathVariable("id") Long id, Principal principal) {
 		String name = principal.getName();
