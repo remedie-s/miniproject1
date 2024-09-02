@@ -22,7 +22,7 @@ public class ProductService {
 		return this.productRepository.findAll();
 	}
 
-	public void create(String product_name, String description, Long product_price, String product_quantity,
+	public Product create(String product_name, String description, Long product_price, Long product_quantity,
 			String image_url) {
 		Product p = new Product();
 		p.setProduct_name(product_name);
@@ -32,6 +32,7 @@ public class ProductService {
 		p.setImage_url(image_url);
 		p.setCreate_date(LocalDateTime.now());
 		this.productRepository.save(p);
+		return p;
 	}
 
 	public Product selectOneProduct(long id) {

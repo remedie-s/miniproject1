@@ -2,6 +2,8 @@ package com.example.mini.dto;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Transient;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,14 +22,18 @@ public class ProductForm {
 	@Column(length = 300)
 	@NotEmpty(message = "물품 설명은 비어선 안됩니다.")
 	private String description;
-	@NotEmpty(message = "가격은 비어선 안됩니다.")
+	//가격 1~1,000,000 
+	@Min(1) 
+	@Max(1_000_000)
 	private Long product_price;
-	@NotEmpty(message = "수량은 비어선 안됩니다.")
-	private String product_quantity;
+	//수량 1~1000
+	@Min(1) 
+	@Max(1_000)
+	private Long product_quantity;
 	@NotEmpty(message = "이미지 주소는 비어선 안됩니다.")
 	private String image_url;
 
-	public ProductForm(String product_name, String description, Long product_price, String product_quantity,
+	public ProductForm(String product_name, String description, Long product_price, Long product_quantity,
 			String image_url) {
 		super();
 		this.product_name = product_name;

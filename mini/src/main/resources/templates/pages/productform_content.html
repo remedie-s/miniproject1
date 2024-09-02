@@ -1,0 +1,38 @@
+<html layout:decorate="~{lib/layout}">
+
+    <div th:fragment="frag_index_content" class="content-wrapper">
+        <!-- Content for product form -->
+        <div class="login-box">
+            <div class="login-logo">
+                <a href="#"><b>미니프로젝트</b>쇼핑몰</a>
+            </div>
+            <div class="card">
+                <div class="card-body login-card-body">
+                    <p class="login-box-msg">물품 등록</p>
+                    <form method="post" th:object="${productForm}" th:action="@{/product/create}">
+                        <div class="input-group mb-3">
+                            <input type="text" id="product_name" th:field="*{product_name}" class="form-control" placeholder="물건이름">
+                        </div>
+                        <div class="input-group mb-3">
+                            <input type="text" id="description" th:field="*{description}" class="form-control" placeholder="물건설명">
+                        </div>
+                        <div class="input-group mb-3">
+                            <input type="number" id="product_price" th:field="*{product_price}" class="form-control" placeholder="물건가격">
+                        </div>
+                        <div class="input-group mb-3">
+                            <input type="number" id="product_quantity" th:field="*{product_quantity}" class="form-control" placeholder="물건 재고">
+                        </div>
+                        <div class="input-group mb-3">
+                            <input type="text" id="image_url" th:field="*{image_url}" class="form-control" placeholder="물건 이미지 url">
+                        </div>
+                        <div class="input-group mb-3">
+                            <input type="reset" value="초기화" class="btn btn-warning">
+                            &nbsp;
+                            <input type="submit" value="물건 등록" class="btn btn-warning">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+

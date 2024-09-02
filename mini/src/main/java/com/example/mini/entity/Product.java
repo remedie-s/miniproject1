@@ -29,7 +29,7 @@ public class Product {
 	@Column(length = 300)
 	private String description;
 	private Long product_price;
-	private String product_quantity;
+	private Long product_quantity;
 	private String image_url;
 	@OneToMany(cascade = CascadeType.REMOVE)
 	private List<Review> reviewList;

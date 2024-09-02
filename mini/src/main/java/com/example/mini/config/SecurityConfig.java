@@ -42,6 +42,8 @@ public class SecurityConfig {
 				// (new AntPathRequestMatcher("/**")).authenticated() )
 				// .csrf().disable()
 				.csrf((b) -> b.ignoringRequestMatchers(new AntPathRequestMatcher("/api/**")))
+				.csrf((b) -> b.ignoringRequestMatchers(new AntPathRequestMatcher("/dist/**")))
+				.csrf((b) -> b.ignoringRequestMatchers(new AntPathRequestMatcher("/plugins/**")))
 				.headers((c) -> c.addHeaderWriter(new XFrameOptionsHeaderWriter()))
 
 				.formLogin((formLogin) -> formLogin

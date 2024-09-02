@@ -1,5 +1,6 @@
 package com.example.mini.controller;
 
+import java.security.Principal;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
@@ -16,6 +17,7 @@ import com.example.mini.dto.ProductForm;
 import com.example.mini.entity.Product;
 import com.example.mini.service.ProductService;
 
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -41,20 +43,32 @@ public class ProductController {
 	}
 
 	@GetMapping("/create")
-	public String create(Model model, ProductForm productform) {
-		model.addAttribute("method", "post");
-		return "product_form";
+	public String create(ProductForm productform,Principal principal) {
+		String name = principal.getName();
+		if(name.equals("seller")||name.equals("admin")){
+		return "product_form";}
+		else{
+			System.out.println("권한이 없는 사용자입니다.");
+			return "index";
+		}
 	}
 
 	@PostMapping("/create")
-	public String create(@Valid ProductForm productForm, BindingResult bindingResult) {
+	public String create(@Valid ProductForm productForm, BindingResult bindingResult, HttpServletResponse response) {
+		System.out.println("물품등록");
 		if (bindingResult.hasErrors()) {
+			System.out.println("에러발생");
 			return "product_form";
 		}
-		this.productService.create(productForm.getProduct_name(), productForm.getDescription(),
+		Product product;
+		
+		product=this.productService.create(productForm.getProduct_name(), productForm.getDescription(),
 				productForm.getProduct_price(), productForm.getProduct_quantity(), productForm.getImage_url());
-		return "redirect:/product/detail";
+		System.out.println("물품등록 완료");
+
+		return "redirect:/product/list";
 		// 상품 디테일 페이지로 가게 해야되나?
+		// TODO 물건 카테고리 추가요망
 	}
 
 	@GetMapping("/modify/{id}")
