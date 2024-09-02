@@ -80,7 +80,7 @@ public class SpAddressController {
 		address = this.spAddressService.create(user, spAddressForm.getStreet_name(), spAddressForm.getBuilding_number(), 
 				spAddressForm.getDetail_address(), spAddressForm.getCity());
 				System.out.println("3");
-		return "address_list";
+				return "redirect:/address/list";
 	}
 
 	@GetMapping("/modify/{id}")
