@@ -2,6 +2,8 @@ package com.example.mini.dto;
 
 import java.util.HashMap;
 
+import com.example.mini.entity.Product;
+
 import jakarta.annotation.Nullable;
 import jakarta.persistence.Transient;
 import lombok.Getter;
@@ -15,6 +17,8 @@ public class SpCartForm {
 
 	@Transient
 	private Integer id;
+	private Product product;
+	private Long quantity;
 	@Nullable
-	public HashMap<Long, Long> cartList = new HashMap<Long, Long>();
+	public HashMap<Product, Long> cartList;
 }

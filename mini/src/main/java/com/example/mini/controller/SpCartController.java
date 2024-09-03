@@ -1,6 +1,8 @@
 package com.example.mini.controller;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
+import java.util.HashMap;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.thymeleaf.util.MapUtils;
 
 import com.example.mini.dto.SpCartForm;
 import com.example.mini.entity.Product;
@@ -55,24 +58,35 @@ public class SpCartController {
 		return "cart_list";
 	}
 
-	@GetMapping("/add/{id}")
+	@PostMapping("/add")
 	public void addCart(@Valid SpCartForm spCartForm, BindingResult bindingResult,
 			@ModelAttribute("product") Product product,
 			@ModelAttribute("quantity") Long quantity,
-			Model model, @PathVariable("id") Long id,
-			Principal principal) {
-		// 현재 로그인 하고있는 사람 ID 받아와야함
+			Model model, Principal principal) {
 		// PathVariable 있어야할까?
 		String name = principal.getName();
 		SpUser user = this.spUserService.findbyUsername(name);
 		SpCart spcart = user.getSpcart();
-
-		// 앞에는 브라우저에서 제품ID받아서 제품넣고, 뒤에는 수량 받아서 수량 넣어야함
-		if (spcart.cartList.containsKey(product)) {
-			// 카트리스트 해쉬맵에서 프로덕트 키가지고있는지 확인후 있으면 밸류값만 증가, 없으면 키와 밸류값 입력
-			spcart.cartList.put(product, spcart.cartList.get(product) + quantity);
-		} else {
+		if(spcart==null){
+			System.out.println("카트값 널인지 확인");
+			spcart = new SpCart();
+			spcart.setSpuser(user);
+			spcart.setCreate_date(LocalDateTime.now());
+		}
+		if(MapUtils.isEmpty(spcart.cartList)){
+			System.out.println("카트리스트 널인지 확인");
+			spcart.cartList = new HashMap<>();
 			spcart.cartList.put(product, quantity);
+		}
+		else{
+			System.out.println("카트수량확인");
+			// 앞에는 브라우저에서 제품ID받아서 제품넣고, 뒤에는 수량 받아서 수량 넣어야함
+			if (spcart.cartList.containsKey(product)) {
+				// 카트리스트 해쉬맵에서 프로덕트 키가지고있는지 확인후 있으면 밸류값만 증가, 없으면 키와 밸류값 입력
+				spcart.cartList.put(product, spcart.cartList.get(product) + quantity);
+			} else {
+				spcart.cartList.put(product, quantity);
+			}
 		}
 	}
 
@@ -85,8 +99,8 @@ public class SpCartController {
 		this.spCartService.delete(cartid);
 	}
 
-	@RequestMapping("/sum/{id}")
-	public long sum(@PathVariable("id") Long id, Principal principal) {
+	@RequestMapping("/sum")
+	public long sum(Principal principal) {
 		String name = principal.getName();
 		SpUser user = this.spUserService.findbyUsername(name);
 		SpCart spcart = user.getSpcart();

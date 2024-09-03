@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.mini.dto.ProductForm;
+import com.example.mini.dto.SpCartForm;
 import com.example.mini.entity.Product;
 import com.example.mini.service.ProductService;
 
@@ -37,7 +38,7 @@ public class ProductController {
 	}
 
 	@GetMapping("/detail/{id}")
-	public String detail(Model model, @PathVariable("id") Long id, ProductForm productForm) {
+	public String detail(Model model, @PathVariable("id") Long id, ProductForm productForm, SpCartForm spCartForm) {
 		Product product = this.productService.selectOneProduct(id);
 		model.addAttribute("product", product);
 		return "product_detail";

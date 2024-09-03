@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class MainController {
 	@GetMapping("/index")
 	public String main(Principal principal, Model model) {
+		if(principal==null){
+			return "login_form";
+		}
 		String name = principal.getName();
 		System.out.println("로그인한 유저의 아이디는 : " + name);
 		model.addAttribute("name", name);
