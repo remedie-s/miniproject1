@@ -16,7 +16,7 @@ import lombok.Setter;
 public class SpCartForm {
 
 	@Transient
-	private Integer id;
+	private Long id;
 	private Product product;
 	private Long quantity;
 	@Nullable

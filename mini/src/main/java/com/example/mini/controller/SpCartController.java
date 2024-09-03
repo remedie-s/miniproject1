@@ -59,7 +59,7 @@ public class SpCartController {
 	}
 
 	@PostMapping("/add")
-	public void addCart(@Valid SpCartForm spCartForm, BindingResult bindingResult,
+	public String addCart(@Valid SpCartForm spCartForm, BindingResult bindingResult,
 			@ModelAttribute("product") Product product,
 			@ModelAttribute("quantity") Long quantity,
 			Model model, Principal principal) {
@@ -88,6 +88,7 @@ public class SpCartController {
 				spcart.cartList.put(product, quantity);
 			}
 		}
+		return "product_list";
 	}
 
 	@DeleteMapping("/delete/{id}")
