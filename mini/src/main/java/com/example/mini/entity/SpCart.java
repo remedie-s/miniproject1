@@ -33,7 +33,7 @@ public class SpCart {
 	@JsonIgnore
 	@OneToOne
 	private SpOrder sporder;
-	@OneToMany(mappedBy="SpCart", cascade=CascadeType.REMOVE)
+	@OneToMany(mappedBy = "spCart", cascade = CascadeType.REMOVE)
 	private List<SpCartDetail> cartlist;
 
 }

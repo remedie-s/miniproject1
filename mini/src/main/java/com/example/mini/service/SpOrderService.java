@@ -1,5 +1,6 @@
 package com.example.mini.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -15,6 +16,11 @@ import lombok.RequiredArgsConstructor;
 public class SpOrderService {
     private final SpOrderRepository spOrderRepository;
 
+    public List<SpOrder> getAllOrder() {
+        List<SpOrder> orderlist = this.spOrderRepository.findAll();
+        return orderlist;
+    }
+
     public SpOrder getOneOrder(Long id) {
         Optional<SpOrder> sporder = this.spOrderRepository.findById(id);
         if (sporder.isPresent()) {
@@ -22,13 +28,13 @@ public class SpOrderService {
         }
         throw new DataNotFoundException("order not found");
     }
-    public void delete(Long id) {
-		this.spOrderRepository.deleteById(id);
-	}
-       
 
-	public void save(SpOrder sporder){
-		this.spOrderRepository.save(sporder);
-	}
+    public void delete(Long id) {
+        this.spOrderRepository.deleteById(id);
+    }
+
+    public void save(SpOrder sporder) {
+        this.spOrderRepository.save(sporder);
+    }
 
 }

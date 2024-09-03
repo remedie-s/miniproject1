@@ -1,6 +1,5 @@
 package com.example.mini.entity;
 
-
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -32,7 +31,7 @@ public class SpOrder {
 	private Boolean request = false;
 	@ManyToOne
 	private SpUser spuser;
-	@OneToMany(mappedBy="SpOrder", cascade=CascadeType.REMOVE)
+	@OneToMany(mappedBy = "spOrder", cascade = CascadeType.REMOVE)
 	private List<SpOrderDetail> orderlist;
 	private LocalDateTime create_time;
 

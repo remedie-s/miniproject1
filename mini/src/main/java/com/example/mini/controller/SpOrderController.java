@@ -18,6 +18,7 @@ import com.example.mini.dto.SpOrderForm;
 import com.example.mini.entity.SpCart;
 import com.example.mini.entity.SpCartDetail;
 import com.example.mini.entity.SpOrder;
+import com.example.mini.entity.SpOrderDetail;
 import com.example.mini.entity.SpUser;
 import com.example.mini.service.SpOrderService;
 import com.example.mini.service.SpUserService;
@@ -70,7 +71,8 @@ public class SpOrderController {
 			return "order_form";
 		}
 		// 카트 비었을 때 카트가 비었다고 메시지?
-		else {System.out.println("카트가 비었습니다.");
+		else {
+			System.out.println("카트가 비었습니다.");
 			return "product_form";
 		}
 	}
@@ -78,19 +80,44 @@ public class SpOrderController {
 	@PostMapping("/create")
 	public String create(@Valid SpOrderForm spOrderForm, BindingResult bindingResult, Model model,
 			Principal principal) {
-		
+		if (bindingResult.hasErrors()) {
+			return "product_list";
+		}
+
 		String name = principal.getName();
 		SpUser user = spUserService.findbyUsername(name);
 		SpCart cart = user.getSpcart();
 		SpOrder spOrder = new SpOrder();
 		spOrder.setSpuser(user);
-		spOrder.setOrderlist(new ArrayList<SpCartDetail>());
+		spOrder.setOrderlist(new ArrayList<SpOrderDetail>());
 		spOrder.setCreate_time(LocalDateTime.now());
+		this.spOrderService.save(spOrder);
+		List<SpCartDetail> cartlist = cart.getCartlist();
+		for (SpCartDetail spCartDetail : cartlist) {
+			SpOrderDetail spOrderDetail = new SpOrderDetail();
+			spOrderDetail.setProduct(spCartDetail.getProduct());
+			spOrderDetail.setQuantity(spCartDetail.getQuantity());
+			spOrder.getOrderlist().add(spOrderDetail);
+		}
 		this.spOrderService.save(spOrder);
 		// 카트에서 카트리스트 가져온후 오더에 있는 리스트에 복사
 		System.out.println("주문생성");
-		cart = null;
+		cart.setCartlist(new ArrayList<>());
+		System.out.println("카트 삭제");
 		return "order_list";
+	}
+
+	@GetMapping("/seller/list")
+	public String orderSellerList(Principal principal, Model model) {
+		if (principal.getName().equals("seller") || principal.getName().equals("admin")) {
+			List<SpOrder> order = this.spOrderService.getAllOrder();
+			model.addAttribute("order", order);
+
+		} else {
+			System.out.println("권한이 없습니다");
+
+		}
+		return "order_seller";
 	}
 
 	@PostMapping("/accept")
@@ -127,11 +154,17 @@ public class SpOrderController {
 			Long id = spOrderForm.getId();
 			SpOrder order = spOrderService.getOneOrder(id);
 			order.setStatus(OrderStatus.END);
+			SpUser user = order.getSpuser();
+			String costomer = user.getUsername();
+			List<SpOrderDetail> orderlist = order.getOrderlist();
+			for (SpOrderDetail spOrderDetail : orderlist) {
+				if (!spOrderDetail.getProduct().getCostomerList().contains(costomer)) {
+					spOrderDetail.getProduct().getCostomerList().add(costomer);
+				} // 구매자에게 리뷰권한
+			}
 		} else {
 			System.out.println("권한이 없습니다");
 		}
-		// 구매자에게 리뷰권한 줘야함
-		// 오더에서 키값(물품)하고 유저아이디 뽑아서 productbuylist 에 추가하면 될듯?
 	}
 
 }

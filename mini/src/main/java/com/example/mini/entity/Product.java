@@ -31,6 +31,7 @@ public class Product {
 	private Long product_price;
 	private Long product_quantity;
 	private String image_url;
+	private List<String> costomerList;
 	@OneToMany(cascade = CascadeType.REMOVE)
 	private List<Review> reviewList;
 	private LocalDateTime create_date;
