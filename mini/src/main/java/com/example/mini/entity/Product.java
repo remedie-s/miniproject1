@@ -36,7 +36,7 @@ public class Product {
 	private List<Review> reviewList;
 	private LocalDateTime create_date;
 	@OneToOne
-	private SpCart Spcart;
+	private SpCartDetail spCartDetail;
 	@OneToOne
 	private SpOrder spOrder;
 

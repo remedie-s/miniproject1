@@ -72,10 +72,10 @@ public class SpCartController implements Serializable {
 			@ModelAttribute("product") Product product,
 			@ModelAttribute("quantity") Long quantity,
 			Model model, Principal principal) {
-		// PathVariable 있어야할까?
 		String name = principal.getName();
 		SpUser user = this.spUserService.findbyUsername(name);
 		SpCart spcart = user.getSpcart();
+
 		if (spcart == null) {
 			System.out.println("카트값 널인지 확인");
 			spcart = new SpCart();
@@ -84,25 +84,35 @@ public class SpCartController implements Serializable {
 			spcart.setCreate_date(LocalDateTime.now());
 			this.spCartService.save(spcart);
 		}
+
+		System.out.println(product);
+		System.out.println(quantity);
 		System.out.println("카트리스트 카트리스트에 물건 양 등록");
 		System.out.println("프로덕트 값이 있나 확인");
+
 		boolean productispresent = false;
 		for (SpCartDetail spCartDetail : spcart.getCartlist()) {
 			if (spCartDetail.getProduct().equals(product)) {
 				spCartDetail.setQuantity(spCartDetail.getQuantity() + quantity);
 				productispresent = true;
+				System.out.println("물건이 있음");
 				break;
 			}
 		}
+
 		if (!productispresent) {
 			SpCartDetail cartDetail = new SpCartDetail();
+			System.out.println("물건이 없음");
 			cartDetail.setProduct(product);
 			cartDetail.setQuantity(quantity);
 			cartDetail.setSpCart(spcart);
+
+			System.out.println(cartDetail + "카트디테일");
 			spcart.getCartlist().add(cartDetail);
 		}
-		this.spCartService.save(spcart);
 
+		this.spCartService.save(spcart);
+		System.out.println(spcart);
 		return "redirect:/product/list";
 	}
 
