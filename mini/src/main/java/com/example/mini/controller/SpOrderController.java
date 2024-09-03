@@ -1,7 +1,8 @@
 package com.example.mini.controller;
 
 import java.security.Principal;
-import java.util.HashMap;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
@@ -14,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.mini.config.OrderStatus;
 import com.example.mini.dto.SpOrderForm;
-import com.example.mini.entity.Product;
 import com.example.mini.entity.SpCart;
+import com.example.mini.entity.SpCartDetail;
 import com.example.mini.entity.SpOrder;
 import com.example.mini.entity.SpUser;
 import com.example.mini.service.SpOrderService;
@@ -64,28 +65,31 @@ public class SpOrderController {
 		SpUser user = spUserService.findbyUsername(name);
 		SpCart spcart = user.getSpcart();
 		// 카트 사이즈확인(비어있는지 확인 사이즈)
-		if (spcart.getCartList().size() >= 1) {
+		if (!spcart.getCartlist().isEmpty()) {
 			// model.addAttribute("method", "post");
 			return "order_form";
 		}
 		// 카트 비었을 때 카트가 비었다고 메시지?
-		else {
-			return "cart_empty";
+		else {System.out.println("카트가 비었습니다.");
+			return "product_form";
 		}
 	}
 
 	@PostMapping("/create")
 	public String create(@Valid SpOrderForm spOrderForm, BindingResult bindingResult, Model model,
 			Principal principal) {
-		SpOrder spOrder = new SpOrder();
+		
 		String name = principal.getName();
 		SpUser user = spUserService.findbyUsername(name);
 		SpCart cart = user.getSpcart();
+		SpOrder spOrder = new SpOrder();
+		spOrder.setSpuser(user);
+		spOrder.setOrderlist(new ArrayList<SpCartDetail>());
+		spOrder.setCreate_time(LocalDateTime.now());
+		this.spOrderService.save(spOrder);
 		// 카트에서 카트리스트 가져온후 오더에 있는 리스트에 복사
-		HashMap<Product, Long> cartList = cart.getCartList();
-		spOrder.setOrderList(cartList);
 		System.out.println("주문생성");
-		cart.cartList.clear();
+		cart = null;
 		return "order_list";
 	}
 

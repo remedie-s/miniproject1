@@ -1,8 +1,9 @@
 package com.example.mini.controller;
 
+import java.io.Serializable;
 import java.security.Principal;
 import java.time.LocalDateTime;
-import java.util.HashMap;
+import java.util.ArrayList;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,11 +14,11 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.thymeleaf.util.MapUtils;
 
 import com.example.mini.dto.SpCartForm;
 import com.example.mini.entity.Product;
 import com.example.mini.entity.SpCart;
+import com.example.mini.entity.SpCartDetail;
 import com.example.mini.entity.SpUser;
 import com.example.mini.service.SpCartService;
 import com.example.mini.service.SpUserService;
@@ -28,7 +29,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/cart")
 @Controller
 @RequiredArgsConstructor
-public class SpCartController {
+public class SpCartController implements Serializable {
 	private final SpCartService spCartService;
 	private final SpUserService spUserService;
 
@@ -71,33 +72,39 @@ public class SpCartController {
 			System.out.println("카트값 널인지 확인");
 			spcart = new SpCart();
 			spcart.setSpuser(user);
+			spcart.setCartlist(new ArrayList<SpCartDetail>());
 			spcart.setCreate_date(LocalDateTime.now());
+			this.spCartService.save(spcart);
 		}
-		if(MapUtils.isEmpty(spcart.cartList)){
-			System.out.println("카트리스트 널인지 확인");
-			spcart.cartList = new HashMap<>();
-			spcart.cartList.put(product, quantity);
-		}
-		else{
-			System.out.println("카트수량확인");
-			// 앞에는 브라우저에서 제품ID받아서 제품넣고, 뒤에는 수량 받아서 수량 넣어야함
-			if (spcart.cartList.containsKey(product)) {
-				// 카트리스트 해쉬맵에서 프로덕트 키가지고있는지 확인후 있으면 밸류값만 증가, 없으면 키와 밸류값 입력
-				spcart.cartList.put(product, spcart.cartList.get(product) + quantity);
-			} else {
-				spcart.cartList.put(product, quantity);
+		System.out.println("카트리스트 카트리스트에 물건 양 등록");
+		System.out.println("프로덕트 값이 있나 확인");
+		boolean productispresent=false;
+		for (SpCartDetail spCartDetail : spcart.getCartlist()) {
+			if(spCartDetail.getProduct().equals(product)){
+				spCartDetail.setQuantity(spCartDetail.getQuantity()+quantity);
+			productispresent = true;
+			break;
 			}
-		}
-		return "product_list";
+		} 
+		if(!productispresent){
+		SpCartDetail cartDetail = new SpCartDetail();
+		cartDetail.setProduct(product);
+		cartDetail.setQuantity(quantity);
+		cartDetail.setSpCart(spcart);
+		spcart.getCartlist().add(cartDetail);}
+		this.spCartService.save(spcart);
+		
+		return "redirect:/product/list";
 	}
 
-	@DeleteMapping("/delete/{id}")
-	public void deleteCart(@PathVariable("id") Long id, Principal principal) {
+	@DeleteMapping("/delete")
+	public String deleteCart(Principal principal) {
 		String name = principal.getName();
 		SpUser user = this.spUserService.findbyUsername(name);
 		SpCart spcart = user.getSpcart();
-		Long cartid = spcart.getId();
-		this.spCartService.delete(cartid);
+		if(spcart != null){
+		this.spCartService.delete(spcart.getId());}
+		return "redirect:/product/list";
 	}
 
 	@RequestMapping("/sum")
@@ -115,11 +122,13 @@ public class SpCartController {
 		// String key = entry.getKey();
 		// String value = entry.getValue();
 		// }
-		for (Product product : spcart.cartList.keySet()) {
-			Long quantity = spcart.cartList.get(product);
-			Long price = product.getProduct_price();
+	if(spcart != null){
+		for (SpCartDetail detail : spcart.getCartlist()) {
+			Long quantity = detail.getQuantity();
+			Long price = detail.getProduct().getProduct_price();
 			sum += quantity * price;
 		}
+	}
 		return sum;
 	}
 

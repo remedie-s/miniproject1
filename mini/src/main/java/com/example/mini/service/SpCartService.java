@@ -27,5 +27,8 @@ public class SpCartService {
 	public void delete(Long id) {
 		this.spCartRepository.deleteById(id);
 	}
+	public void save(SpCart spCart){
+		this.spCartRepository.save(spCart);
+	}
 
 }

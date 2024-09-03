@@ -22,5 +22,13 @@ public class SpOrderService {
         }
         throw new DataNotFoundException("order not found");
     }
+    public void delete(Long id) {
+		this.spOrderRepository.deleteById(id);
+	}
+       
+
+	public void save(SpOrder sporder){
+		this.spOrderRepository.save(sporder);
+	}
 
 }
