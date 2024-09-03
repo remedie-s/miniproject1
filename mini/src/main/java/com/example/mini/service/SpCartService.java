@@ -24,11 +24,20 @@ public class SpCartService {
 		throw new DataNotFoundException("user not found");
 	}
 
-	public void delete(Long id) {
-		this.spCartRepository.deleteById(id);
+	public void delete(SpCart cart) {
+		this.spCartRepository.delete(cart);
 	}
-	public void save(SpCart spCart){
+
+	public void save(SpCart spCart) {
 		this.spCartRepository.save(spCart);
+	}
+
+	public SpCart selectOneCart(Long id) {
+		Optional<SpCart> spCart = this.spCartRepository.findById(id);
+		if (spCart.isPresent()) {
+			return spCart.get();
+		}
+		throw new DataNotFoundException("cart not found");
 	}
 
 }

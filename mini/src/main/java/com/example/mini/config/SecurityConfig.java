@@ -40,6 +40,8 @@ public class SecurityConfig {
 				.authorizeHttpRequests((a) -> a.requestMatchers(new AntPathRequestMatcher("/dist/**")).permitAll())
 				.authorizeHttpRequests((a) -> a.requestMatchers(new AntPathRequestMatcher("/plugins/**")).permitAll())
 				.authorizeHttpRequests((a) -> a.requestMatchers(new AntPathRequestMatcher("/api/**")).permitAll())
+				.authorizeHttpRequests((a) -> a.requestMatchers(new AntPathRequestMatcher("/cart/**")).permitAll())
+				.authorizeHttpRequests((a) -> a.requestMatchers(new AntPathRequestMatcher("/order/**")).permitAll())
 				.authorizeHttpRequests((a) -> a.requestMatchers(new AntPathRequestMatcher("/**")).permitAll())
 				// (new AntPathRequestMatcher("/**")).authenticated() )
 				// .csrf().disable()

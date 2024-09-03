@@ -67,7 +67,6 @@ public class SpOrderController {
 		SpCart spcart = user.getSpcart();
 		// 카트 사이즈확인(비어있는지 확인 사이즈)
 		if (!spcart.getCartlist().isEmpty()) {
-			// model.addAttribute("method", "post");
 			return "order_form";
 		}
 		// 카트 비었을 때 카트가 비었다고 메시지?

@@ -1,6 +1,6 @@
 <!--/* 모든 페이지에 공통으로 적용되는 레이아웃 */-->
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:layout="http://www.thymeleaf.org">
 
 <head>
   <meta charset="utf-8">
@@ -35,9 +35,9 @@
   <th:block layout:fragment="content"> </th:block>
 
   <!-- jQuery -->
-  <script src="plugins/jquery/jquery.min.js"></script>
+  <script src="/plugins/jquery/jquery.min.js"></script>
   <!-- jQuery UI 1.11.4 -->
-  <script src="plugins/jquery-ui/jquery-ui.min.js"></script>
+  <script src="/plugins/jquery-ui/jquery-ui.min.js"></script>
   <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
   <script>
     $.widget.bridge('uibutton', $.ui.button)

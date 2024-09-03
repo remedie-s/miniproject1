@@ -4,11 +4,11 @@ import java.io.Serializable;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,28 +34,36 @@ public class SpCartController implements Serializable {
 	private final SpUserService spUserService;
 
 	@GetMapping("/list")
-	public String list(@Valid SpCartForm spCartForm, BindingResult bindingResult, Model model,
-			Principal principal) {
+	public String list(Model model, Principal principal) {
 		// PathVariable 있어야할까?
 		String name = principal.getName();
 		SpUser user = this.spUserService.findbyUsername(name);
-		SpCart spcart = user.getSpcart();
 		long id = user.getId();
-		model.addAttribute(spcart);
 		// 키값하고 밸류값 따로 ArrayList로 보내는게 나을까?
 
 		return "redirect:/cart/list/" + id;
 	}
 
-	@PostMapping("/list/{id}")
-	public String list(@Valid SpCartForm spCartForm, BindingResult bindingResult, Model model,
-			@PathVariable("id") Long id, Principal principal) {
+	@GetMapping("/list/{id}")
+	public String list(@PathVariable("id") Long id, Model model,
+			Principal principal) {
 		// PathVariable 있어야할까?
 		String name = principal.getName();
 		SpUser user = this.spUserService.findbyUsername(name);
 		SpCart spcart = user.getSpcart();
-		model.addAttribute(spcart);
-		// 키값하고 밸류값 따로 ArrayList로 보내는게 나을까?
+		if (spcart.getId() != id) {
+			System.out.println("접근 권한이 없습니다.");
+			return "index";
+		}
+		List<SpCartDetail> cartlist = spcart.getCartlist();
+		model.addAttribute("cartlist", cartlist);
+		// for (SpCartDetail spCartDetail : cartlist) {
+		// spCartDetail.getId();
+		// spCartDetail.getProduct().getImage_url();
+		// spCartDetail.getProduct().getProduct_name();
+		// spCartDetail.getProduct().getProduct_price();
+		// spCartDetail.getQuantity();
+		// }
 		return "cart_list";
 	}
 
@@ -68,7 +76,7 @@ public class SpCartController implements Serializable {
 		String name = principal.getName();
 		SpUser user = this.spUserService.findbyUsername(name);
 		SpCart spcart = user.getSpcart();
-		if(spcart==null){
+		if (spcart == null) {
 			System.out.println("카트값 널인지 확인");
 			spcart = new SpCart();
 			spcart.setSpuser(user);
@@ -78,37 +86,37 @@ public class SpCartController implements Serializable {
 		}
 		System.out.println("카트리스트 카트리스트에 물건 양 등록");
 		System.out.println("프로덕트 값이 있나 확인");
-		boolean productispresent=false;
+		boolean productispresent = false;
 		for (SpCartDetail spCartDetail : spcart.getCartlist()) {
-			if(spCartDetail.getProduct().equals(product)){
-				spCartDetail.setQuantity(spCartDetail.getQuantity()+quantity);
-			productispresent = true;
-			break;
+			if (spCartDetail.getProduct().equals(product)) {
+				spCartDetail.setQuantity(spCartDetail.getQuantity() + quantity);
+				productispresent = true;
+				break;
 			}
-		} 
-		if(!productispresent){
-		SpCartDetail cartDetail = new SpCartDetail();
-		cartDetail.setProduct(product);
-		cartDetail.setQuantity(quantity);
-		cartDetail.setSpCart(spcart);
-		spcart.getCartlist().add(cartDetail);}
+		}
+		if (!productispresent) {
+			SpCartDetail cartDetail = new SpCartDetail();
+			cartDetail.setProduct(product);
+			cartDetail.setQuantity(quantity);
+			cartDetail.setSpCart(spcart);
+			spcart.getCartlist().add(cartDetail);
+		}
 		this.spCartService.save(spcart);
-		
+
 		return "redirect:/product/list";
 	}
 
-	@DeleteMapping("/delete")
-	public String deleteCart(Principal principal) {
-		String name = principal.getName();
-		SpUser user = this.spUserService.findbyUsername(name);
-		SpCart spcart = user.getSpcart();
-		if(spcart != null){
-		this.spCartService.delete(spcart.getId());}
-		return "redirect:/product/list";
+	@GetMapping("/delete/{id}")
+	public String deleteCart(@PathVariable("id") Long id, Principal principal) {
+		SpCart spCart = this.spCartService.selectOneCart(id);
+		this.spCartService.delete(spCart);
+		System.out.println("카트 물품 삭제 성공");
+
+		return "redirect:/cart/list";
 	}
 
 	@RequestMapping("/sum")
-	public long sum(Principal principal) {
+	public void sum(Principal principal, Model model) {
 		String name = principal.getName();
 		SpUser user = this.spUserService.findbyUsername(name);
 		SpCart spcart = user.getSpcart();
@@ -122,14 +130,15 @@ public class SpCartController implements Serializable {
 		// String key = entry.getKey();
 		// String value = entry.getValue();
 		// }
-	if(spcart != null){
-		for (SpCartDetail detail : spcart.getCartlist()) {
-			Long quantity = detail.getQuantity();
-			Long price = detail.getProduct().getProduct_price();
-			sum += quantity * price;
+		if (spcart != null) {
+			for (SpCartDetail detail : spcart.getCartlist()) {
+				Long quantity = detail.getQuantity();
+				Long price = detail.getProduct().getProduct_price();
+				sum += quantity * price;
+			}
 		}
-	}
-		return sum;
+		model.addAttribute("sum", sum);
+
 	}
 
 }
