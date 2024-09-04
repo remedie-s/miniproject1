@@ -10,4 +10,6 @@ public interface SpCartRepository extends JpaRepository<SpCart, Long> {
 
     List<SpCart> findByUserid(Long userid);
 
+    void deleteByUserid(Long userid);
+
 }

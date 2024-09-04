@@ -47,14 +47,17 @@ public class SpOrderController {
 	}
 
 	@GetMapping("/list/{id}")
-	public String orderList(@PathVariable("id") Long id, Model model ,Principal principal) {
+	public String orderList(@PathVariable("id") Long id, Model model, Principal principal) {
 		String name = principal.getName();
 		SpUser user = spUserService.findbyUsername(name);
 		Long userid = user.getId();
+		if (principal.getName().equals("seller") || principal.getName().equals("admin")) {
+			return "order_seller_list";
+		}
 		List<SpOrder> spOrder;
 		try {
 			spOrder = this.spOrderService.findByUserid(userid);
-			if(spOrder==null){
+			if (spOrder == null) {
 				spOrder = new ArrayList<>();
 			}
 		} catch (Exception e) {
@@ -62,21 +65,24 @@ public class SpOrderController {
 			e.printStackTrace();
 			return "index";
 		}
-			ArrayList <OrderListDto> orderlist = new ArrayList<>();
-			long ordersum = 0;
+		ArrayList<OrderListDto> orderlist = new ArrayList<>();
+		long ordersum = 0;
 		for (SpOrder sporder : spOrder) {
 			OrderListDto orderListDto = new OrderListDto();
 			orderListDto.setId(sporder.getProductid());
 			orderListDto.setImage_url(this.productService.selectOneProduct(sporder.getProductid()).getImage_url());
-			orderListDto.setProduct_name(this.productService.selectOneProduct(sporder.getProductid()).getProduct_name());
-			orderListDto.setProduct_price(this.productService.selectOneProduct(sporder.getProductid()).getProduct_price());
+			orderListDto
+					.setProduct_name(this.productService.selectOneProduct(sporder.getProductid()).getProduct_name());
+			orderListDto
+					.setProduct_price(this.productService.selectOneProduct(sporder.getProductid()).getProduct_price());
 			orderListDto.setQuantity(sporder.getQuantity());
-			orderListDto.setSubtotal((this.productService.selectOneProduct(sporder.getProductid()).getProduct_price())*(sporder.getQuantity()));
+			orderListDto.setSubtotal((this.productService.selectOneProduct(sporder.getProductid()).getProduct_price())
+					* (sporder.getQuantity()));
 			orderListDto.setCreate_time(LocalDateTime.now());
 			orderlist.add(orderListDto);
 			Long quantity = sporder.getQuantity();
-       		Long price = this.productService.selectOneProduct(sporder.getProductid()).getProduct_price();
-        	ordersum += quantity * price;
+			Long price = this.productService.selectOneProduct(sporder.getProductid()).getProduct_price();
+			ordersum += quantity * price;
 		}
 		model.addAttribute("ordersum", ordersum);
 		model.addAttribute("orderlist", orderlist);
@@ -87,34 +93,34 @@ public class SpOrderController {
 	@GetMapping("/detail/{id}")
 	public String orderdetail(Model model, @PathVariable("id") Long id, SpOrderForm spOrderForm) {
 		SpOrder order = this.spOrderService.getOneOrder(id);
-		 model.addAttribute("order", order);
+		model.addAttribute("order", order);
 		return "order_detail";
 	}
 
 	// 장바구니 있는지 탐색후 있으면 추가 없으면 홈페이지
 	@GetMapping("/create")
-	public String create(SpOrderForm spOrderForm,SpCartForm spCartForm, Model model,
+	public String create(SpOrderForm spOrderForm, SpCartForm spCartForm, Model model,
 			Principal principal) {
 		String name = principal.getName();
 		SpUser user = spUserService.findbyUsername(name);
 		Long userid = user.getId();
 
 		List<SpCart> cartlist = this.spCartService.findByUserid(userid);
-		
+
 		// 카트 확인(비어있는지 확인)
 		if (cartlist.isEmpty()) {
 			System.out.println("카트가 비어있어요");
 			return "product_list";
-		}
-		else {
+		} else {
 			System.out.println("카트가 들어있습니다.");
 			return "order_form";
 		}
 	}
-	//TODO 고쳐야함
+
+	// TODO 고쳐야함
 	@PostMapping("/create")
-	public String create(@Valid SpOrderForm spOrderForm, BindingResult bindingResult,SpCartForm spCartForm ,Model model,
-			Principal principal) {
+	public String create(@Valid SpOrderForm spOrderForm, BindingResult bindingResult, SpCartForm spCartForm,
+			Model model, Principal principal) {
 		if (bindingResult.hasErrors()) {
 			System.out.println("에러가 있어요");
 			return "product_list";
@@ -123,19 +129,27 @@ public class SpOrderController {
 		SpUser user = spUserService.findbyUsername(name);
 		Long userid = user.getId();
 		List<SpCart> cartlist = this.spCartService.findByUserid(userid);
+		if (cartlist.isEmpty()) {
+			System.out.println("카트가 비어있어요");
+			return "product_list";
+		}
+		System.out.println("카트가 들어있습니다.");
 		// 카트에서 카트리스트 가져온후 오더에 있는 리스트에 복사
 		for (SpCart spCart : cartlist) {
 			SpOrder spOrder = new SpOrder();
 			spOrder.setUserid(userid);
-			spOrder.setProductid(spCart.getProductid());	
+			spOrder.setProductid(spCart.getProductid());
 			spOrder.setQuantity(spCart.getQuantity());
 			spOrder.setCreate_time(LocalDateTime.now());
+			spOrder.setStatus(OrderStatus.READY);
+			spOrder.setRequest(false);
 			this.spOrderService.save(spOrder);
 			System.out.println("주문생성 완료1");
 		}
 		System.out.println("주문생성 완료2");
 		System.out.println("카트 삭제");
-		cartlist.removeAll(cartlist);
+		this.spCartService.deleteByUserid(userid);
+
 		return "order_list";
 	}
 
@@ -149,7 +163,7 @@ public class SpOrderController {
 			System.out.println("권한이 없습니다");
 
 		}
-		return "order_seller";
+		return "order_seller_list";
 	}
 
 	@PostMapping("/accept")
@@ -189,9 +203,9 @@ public class SpOrderController {
 			SpOrder order = spOrderService.getOneOrder(id);
 			order.setStatus(OrderStatus.END);
 			SpUser user = this.spUserService.findbyId(order.getUserid());
-			Long userid=user.getId();
-			Long productid=order.getProductid();
-			Product product=this.productService.selectOneProduct(productid);
+			Long userid = user.getId();
+			Long productid = order.getProductid();
+			Product product = this.productService.selectOneProduct(productid);
 			product.addCustomer(userid);
 			this.productService.save(product);
 		} else {

@@ -16,8 +16,8 @@
             </div><!-- /.row -->
         </div><!-- /.container-fluid -->
     </div>
-    
-    
+
+
     <section class="content">
         <div class="container-fluid">
             <!-- Small boxes (Stat box) -->
@@ -33,43 +33,63 @@
                                 <th>제품가격</th>
                                 <th>제품수량</th>
                                 <th>제품별총가격</th>
-                                <th>삭제</th>
+                                <th>주문 상태</th>
+                                <th>주문시간</th>
+                                <th>주문승인</th>
+                                <th>주문완료</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr th:each="cartlistdto, idx : ${cartlist}"> <!--  반복되는 가장 상위 요소 <= 반복문 적용 -->
+                            <tr th:each="orderListDto, idx : ${orderlist}"> <!--  반복되는 가장 상위 요소 <= 반복문 적용 -->
                                 <td>
-                                    <span th:text="${cartlistdto.id}"></span>
+                                    <span th:text="${orderListDto.id}"></span>
                                 </td>
                                 <td>
-                                    <img th:src="${cartlistdto.image_url}" alt="Product Image" style="width: 100px; height: auto;">
+                                    <img th:src="${orderListDto.image_url}" alt="Product Image"
+                                        style="width: 100px; height: auto;">
                                 </td>
                                 <td>
-                                    <span th:text="${cartlistdto.product_name}"></span>
+                                    <span th:text="${orderListDto.product_name}"></span>
                                 </td>
                                 <td>
-                                    <span th:text="${cartlistdto.product_price}"></span>
+                                    <span th:text="${orderListDto.product_price}"></span>
                                 </td>
                                 <td>
-                                    <span th:text="${cartlistdto.quantity}"></span>
+                                    <span th:text="${orderListDto.quantity}"></span>
                                 </td>
                                 <td>
-                                    <span th:text="${cartlistdto.subtotal}"></span>
+                                    <span th:text="${orderListDto.subtotal}"></span>
                                 </td>
-                                
                                 <td>
-                                    <a th:href="@{|/cart/delete/${ cartlistdto.id }|}" >   삭제  </a>
+                                    <span th:text="${orderListDto.status}"></span>
+                                </td>
+                                <td>
+                                    <span th:text="${orderListDto.create_time}"></span>
+                                </td>
+                                <td>
+                                    <a th:href="@{|/order/accepct/${ orderListDto.id }|}"> 주문승인 </a>
+                                </td>
+                                <td>
+                                    <a th:href="@{|/order/end/${ orderListDto.id }|}"> 주문완료 </a>
                                 </td>
 
                             </tr>
                         </tbody>
                     </table>
 
+
                     
-                    <a th:href="@{/order/create}" class="btn btn-dark"> 주문 등록</a>
+                    <a th:href="@{/order/seller/list}" class="btn btn-primary"> 관리자 관리 </a>
 
                 </div>
             </div>
+        </div>
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h3 class="m-0">주문 총 가격 <br> <span th:text=|${ordersum}원|> </span></h3>
+                </div>
+            </div><!-- /.row -->
         </div>
     </section>
 

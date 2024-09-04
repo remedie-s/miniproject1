@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.mini.entity.SpCart;
 import com.example.mini.exception.DataNotFoundException;
@@ -30,7 +31,7 @@ public class SpCartService {
 	}
 
 	public void save(SpCart spCart) {
-		System.out.println("11111"+spCart);
+		System.out.println("11111" + spCart);
 
 		this.spCartRepository.save(spCart);
 	}
@@ -43,12 +44,17 @@ public class SpCartService {
 		throw new DataNotFoundException("cart not found");
 	}
 
-    public List <SpCart> findByUserid(Long userid) {
-		List <SpCart> carts = this.spCartRepository.findByUserid(userid);
-        if(carts.isEmpty()){
+	public List<SpCart> findByUserid(Long userid) {
+		List<SpCart> carts = this.spCartRepository.findByUserid(userid);
+		if (carts.isEmpty()) {
 			throw new DataNotFoundException("cart 가 없어요");
 		}
-        return carts;
-    }
+		return carts;
+	}
+
+	@Transactional
+	public void deleteByUserid(Long userid) {
+		spCartRepository.deleteByUserid(userid);
+	}
 
 }
