@@ -62,6 +62,7 @@ public class SpCartController {
 			return "index";
 		}
 			ArrayList <CartListDto> cartlist = new ArrayList<>();
+			long cartsum = 0;
 		for (SpCart spCart : spcart) {
 			CartListDto cartListDto = new CartListDto();
 			cartListDto.setId(spCart.getProductid());
@@ -70,9 +71,12 @@ public class SpCartController {
 			cartListDto.setProduct_price(this.productService.selectOneProduct(spCart.getProductid()).getProduct_price());
 			cartListDto.setQuantity(spCart.getQuantity());
 			cartlist.add(cartListDto);
+			Long quantity = spCart.getQuantity();
+       		Long price = this.productService.selectOneProduct(spCart.getProductid()).getProduct_price();
+        	cartsum += quantity * price;
 		}
 
-		
+		model.addAttribute("cartsum",cartsum);
 		model.addAttribute("cartlist", cartlist);
 		return "cart_list";
 	}
