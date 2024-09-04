@@ -79,6 +79,7 @@ public class SpOrderController {
 			orderListDto.setSubtotal((this.productService.selectOneProduct(sporder.getProductid()).getProduct_price())
 					* (sporder.getQuantity()));
 			orderListDto.setCreate_time(LocalDateTime.now());
+			orderListDto.setOrderid(sporder.getId());
 			orderlist.add(orderListDto);
 			Long quantity = sporder.getQuantity();
 			Long price = this.productService.selectOneProduct(sporder.getProductid()).getProduct_price();
@@ -150,57 +151,91 @@ public class SpOrderController {
 		System.out.println("카트 삭제");
 		this.spCartService.deleteByUserid(userid);
 
-		return "order_list";
+		return "redirect:/order/list/";
 	}
 
 	@GetMapping("/seller/list")
 	public String orderSellerList(Principal principal, Model model) {
-		if (principal.getName().equals("seller") || principal.getName().equals("admin")) {
-			List<SpOrder> order = this.spOrderService.getAllOrder();
-			model.addAttribute("order", order);
-
-		} else {
-			System.out.println("권한이 없습니다");
-
+		if (!principal.getName().equals("seller") && !principal.getName().equals("admin")) {
+			return "order_list";
 		}
+		List<SpOrder> spOrder;
+		try {
+			spOrder = this.spOrderService.getAllOrder();
+			if (spOrder == null) {
+				spOrder = new ArrayList<>();
+			}
+		} catch (Exception e) {
+			spOrder = new ArrayList<>();
+			e.printStackTrace();
+			return "index";
+		}
+		ArrayList<OrderListDto> orderlist = new ArrayList<>();
+		long ordersum = 0;
+		for (SpOrder sporder : spOrder) {
+			OrderListDto orderListDto = new OrderListDto();
+			orderListDto.setId(sporder.getProductid());
+			orderListDto.setImage_url(this.productService.selectOneProduct(sporder.getProductid()).getImage_url());
+			orderListDto
+					.setProduct_name(this.productService.selectOneProduct(sporder.getProductid()).getProduct_name());
+			orderListDto
+					.setProduct_price(this.productService.selectOneProduct(sporder.getProductid()).getProduct_price());
+			orderListDto.setQuantity(sporder.getQuantity());
+			orderListDto.setSubtotal((this.productService.selectOneProduct(sporder.getProductid()).getProduct_price())
+					* (sporder.getQuantity()));
+			orderListDto.setCreate_time(LocalDateTime.now());
+			orderListDto.setOrderid(sporder.getId());
+			orderlist.add(orderListDto);
+			Long quantity = sporder.getQuantity();
+			Long price = this.productService.selectOneProduct(sporder.getProductid()).getProduct_price();
+			ordersum += quantity * price;
+		}
+		model.addAttribute("ordersum", ordersum);
+		model.addAttribute("orderlist", orderlist);
 		return "order_seller_list";
 	}
 
-	@PostMapping("/accept")
-	public void accept(SpOrderForm spOrderForm, Model model, Principal principal) {
+	@GetMapping("/accept/{id}")
+	public String accept(@PathVariable("id") Long id, Principal principal) {
 		// 아이디가 셀러 혹은 어드민일 경우에만 주문상태 변경가능
 
 		if (principal.getName().equals("seller") || principal.getName().equals("admin")) {
 			// 모델로 받는게 나을려나
-			Long id = spOrderForm.getId();
-			SpOrder order = spOrderService.getOneOrder(id);
+			System.out.println("찾기 시작");
+			SpOrder order = this.spOrderService.getOneOrder(id);
+			System.out.println("오더하나 찾기");
 			order.setRequest(true);
+			System.out.println("리퀘스트 상태 바꿈");
 			order.setStatus(OrderStatus.START);
+			System.out.println("오더상태 바꿈");
 			this.spOrderService.save(order);
+			System.out.println("오더 저장");
+			return "redirect:/order/seller/list";
 		} else {
 			System.out.println("권한이 없습니다");
-
+			return "order_list";
 		}
 	}
 
-	@PostMapping("/arrive")
-	public void arrive(SpOrderForm spOrderForm, Model model, Principal principal) {
+	@GetMapping("/arrive/{id}")
+	public String arrive(@PathVariable("id") Long id, SpOrderForm spOrderForm, Model model, Principal principal) {
 		if (principal.getName().equals("seller") || principal.getName().equals("admin")) {
-			Long id = spOrderForm.getId();
-			SpOrder order = spOrderService.getOneOrder(id);
+			SpOrder order = this.spOrderService.getOneOrder(id);
+
 			order.setStatus(OrderStatus.ARRIVE);
 			this.spOrderService.save(order);
+			return "redirect:/order/seller/list";
 		} else {
 			System.out.println("권한이 없습니다");
+			return "order_list";
 
 		}
 	}
 
-	@PostMapping("/end")
-	public void end(SpOrderForm spOrderForm, Model model, Principal principal) {
+	@GetMapping("/end/{id}")
+	public String end(@PathVariable("id") Long id, SpOrderForm spOrderForm, Model model, Principal principal) {
 		if (principal.getName().equals("seller") || principal.getName().equals("admin")) {
-			Long id = spOrderForm.getId();
-			SpOrder order = spOrderService.getOneOrder(id);
+			SpOrder order = this.spOrderService.getOneOrder(id);
 			order.setStatus(OrderStatus.END);
 			SpUser user = this.spUserService.findbyId(order.getUserid());
 			Long userid = user.getId();
@@ -208,9 +243,22 @@ public class SpOrderController {
 			Product product = this.productService.selectOneProduct(productid);
 			product.addCustomer(userid);
 			this.productService.save(product);
+			return "redirect:/order/seller/list";
 		} else {
 			System.out.println("권한이 없습니다");
+			return "order_list";
 		}
+	}
+
+	// TODO id를 어떻게 구해와야할까
+	@GetMapping("/delete/{id}")
+	public String delete(@PathVariable("id") long id, Principal principal) {
+
+		SpOrder order = this.spOrderService.getOneOrder(id);
+		this.spOrderService.delete(order);
+		System.out.println("반품 완료");
+		return "redirect:/order/list";
+
 	}
 
 }

@@ -34,15 +34,15 @@
                                 <th>제품수량</th>
                                 <th>제품별총가격</th>
                                 <th>주문 상태</th>
-                                <th>주문 시간</th>
-                                <th>반품 신청</th>
-                                
+                                <th>주문시간</th>
+                                <th>주문승인</th>
+                                <th>주문완료</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr th:each="orderListDto, idx : ${orderlist}"> <!--  반복되는 가장 상위 요소 <= 반복문 적용 -->
                                 <td>
-                                    <span th:text="${orderListDto.orderid}"></span>
+                                    <span th:text="${orderListDto.id}"></span>
                                 </td>
                                 <td>
                                     <img th:src="${orderListDto.image_url}" alt="Product Image"
@@ -66,9 +66,11 @@
                                 <td>
                                     <span th:text="${orderListDto.create_time}"></span>
                                 </td>
-                                <!-- id값을 오더ID로 집어넣어야하는데 오더 ID를 어떻게 구해야할까 -->
-                                <td>                                    
-                                    <a th:href="@{|/order/delete/${ orderListDto.orderid }|}"> 반품신청 </a>
+                                <td>
+                                    <a th:href="@{|/order/accept/${ orderListDto.orderid }|}"> 주문승인 </a>
+                                </td>
+                                <td>
+                                    <a th:href="@{|/order/end/${ orderListDto.orderid }|}"> 주문완료 </a>
                                 </td>
 
                             </tr>

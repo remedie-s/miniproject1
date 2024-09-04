@@ -38,13 +38,16 @@ public class SpOrderService {
     }
 
     public List<SpOrder> findByUserid(Long userid) {
-       List <SpOrder> orders = this.spOrderRepository.findByUserid(userid);
-        if(orders.isEmpty()){
-			throw new DataNotFoundException("order 가 없어요");
-		}
+        List<SpOrder> orders = this.spOrderRepository.findByUserid(userid);
+        if (orders.isEmpty()) {
+            throw new DataNotFoundException("order 가 없어요");
+        }
         return orders;
 
-       
+    }
+
+    public void delete(SpOrder order) {
+        this.spOrderRepository.delete(order);
     }
 
 }
