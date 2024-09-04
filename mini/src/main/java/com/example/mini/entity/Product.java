@@ -1,6 +1,7 @@
 package com.example.mini.entity;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
@@ -31,10 +32,15 @@ public class Product {
 	private Long product_price;
 	private Long product_quantity;
 	private String image_url;
-	private List<String> costomerList;
+	private List<Long> costomerList=new ArrayList<>();
 	@OneToMany(cascade = CascadeType.REMOVE)
 	private List<Review> reviewList;
 	private LocalDateTime create_date;
 	
+	public void addCustomer(Long customerId) {
+        if (!costomerList.contains(customerId)) {
+            costomerList.add(customerId);
+        }
+    }
 
 }

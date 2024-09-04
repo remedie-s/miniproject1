@@ -50,5 +50,8 @@ public class ProductService {
 	public void modify(Product product) {
 		this.productRepository.save(product);
 	}
+	public void save(Product product){
+		this.productRepository.save(product);
+	}
 
 }

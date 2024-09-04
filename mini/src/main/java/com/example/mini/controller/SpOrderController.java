@@ -2,7 +2,6 @@ package com.example.mini.controller;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
@@ -14,13 +13,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.mini.config.OrderStatus;
+import com.example.mini.dto.SpCartForm;
 import com.example.mini.dto.SpOrderForm;
+import com.example.mini.entity.Product;
 import com.example.mini.entity.SpCart;
-import com.example.mini.entity.SpCartDetail;
 import com.example.mini.entity.SpOrder;
-import com.example.mini.entity.SpOrderDetail;
 import com.example.mini.entity.SpUser;
 import com.example.mini.service.ProductService;
+import com.example.mini.service.SpCartService;
 import com.example.mini.service.SpOrderService;
 import com.example.mini.service.SpUserService;
 
@@ -34,6 +34,7 @@ public class SpOrderController {
 	private final SpUserService spUserService;
 	private final SpOrderService spOrderService;
 	private final ProductService productService;
+	private final SpCartService spCartService;
 
 	@GetMapping("/list")
 	public String orderList(Principal principal) {
@@ -47,7 +48,8 @@ public class SpOrderController {
 	public String orderList(Model model, @PathVariable("id") Long id, Principal principal) {
 		String name = principal.getName();
 		SpUser user = spUserService.findbyUsername(name);
-		List<SpOrder> ordersList = user.getOrdersList();
+		Long userid = user.getId();
+		List<SpOrder> ordersList = this.spOrderService.findByUserid(userid);
 		model.addAttribute("orderList", ordersList);
 
 		return "order_list";
@@ -56,55 +58,54 @@ public class SpOrderController {
 	@GetMapping("/detail/{id}")
 	public String orderdetail(Model model, @PathVariable("id") Long id, SpOrderForm spOrderForm) {
 		SpOrder order = this.spOrderService.getOneOrder(id);
-		// model.addAttribute("order", order);
+		 model.addAttribute("order", order);
 		return "order_detail";
 	}
 
 	// 장바구니 있는지 탐색후 있으면 추가 없으면 생성
 	@GetMapping("/create")
-	public String create(SpOrderForm spOrderForm, Model model,
+	public String create(SpOrderForm spOrderForm,SpCartForm spCartForm, Model model,
 			Principal principal) {
 		String name = principal.getName();
 		SpUser user = spUserService.findbyUsername(name);
-		SpCart spcart = user.getSpcart();
-		// 카트 사이즈확인(비어있는지 확인 사이즈)
-		if (!spcart.getCartlist().isEmpty()) {
-			return "order_form";
+		Long userid = user.getId();
+		List<SpCart> cartlist = this.spCartService.findByUserid(userid);
+		
+		// 카트 확인(비어있는지 확인)
+		if (cartlist.isEmpty()) {
+			System.out.println("카트가 비어있어요");
+			return "product_list";
 		}
-		// 카트 비었을 때 카트가 비었다고 메시지?
 		else {
-			System.out.println("카트가 비었습니다.");
-			return "product_form";
+			System.out.println("카트가 들어있습니다.");
+			return "order_form";
 		}
 	}
 
 	@PostMapping("/create")
-	public String create(@Valid SpOrderForm spOrderForm, BindingResult bindingResult, Model model,
+	public String create(@Valid SpOrderForm spOrderForm, BindingResult bindingResult,SpCartForm spCartForm ,Model model,
 			Principal principal) {
 		if (bindingResult.hasErrors()) {
+			System.out.println("에러가 있어요");
 			return "product_list";
 		}
-
 		String name = principal.getName();
 		SpUser user = spUserService.findbyUsername(name);
-		SpCart cart = user.getSpcart();
-		SpOrder spOrder = new SpOrder();
-		spOrder.setSpuser(user);
-		spOrder.setOrderlist(new ArrayList<SpOrderDetail>());
-		spOrder.setCreate_time(LocalDateTime.now());
-		this.spOrderService.save(spOrder);
-		List<SpCartDetail> cartlist = cart.getCartlist();
-		for (SpCartDetail spCartDetail : cartlist) {
-			SpOrderDetail spOrderDetail = new SpOrderDetail();
-			spOrderDetail.setProductid(spCartDetail.getProductid());
-			spOrderDetail.setQuantity(spCartDetail.getQuantity());
-			spOrder.getOrderlist().add(spOrderDetail);
-		}
-		this.spOrderService.save(spOrder);
+		Long userid = user.getId();
+		List<SpCart> cartlist = this.spCartService.findByUserid(userid);
 		// 카트에서 카트리스트 가져온후 오더에 있는 리스트에 복사
-		System.out.println("주문생성");
-		cart.setCartlist(new ArrayList<>());
+		for (SpCart spCart : cartlist) {
+			SpOrder spOrder = new SpOrder();
+			spOrder.setUserid(userid);
+			spOrder.setProductid(spCart.getProductid());	
+			spOrder.setQuantity(spCart.getQuantity());
+			spOrder.setCreate_time(LocalDateTime.now());
+			this.spOrderService.save(spOrder);
+			System.out.println("주문생성 완료1");
+		}
+		System.out.println("주문생성 완료2");
 		System.out.println("카트 삭제");
+		cartlist.removeAll(cartlist);
 		return "order_list";
 	}
 
@@ -131,6 +132,7 @@ public class SpOrderController {
 			SpOrder order = spOrderService.getOneOrder(id);
 			order.setRequest(true);
 			order.setStatus(OrderStatus.START);
+			this.spOrderService.save(order);
 		} else {
 			System.out.println("권한이 없습니다");
 
@@ -143,6 +145,7 @@ public class SpOrderController {
 			Long id = spOrderForm.getId();
 			SpOrder order = spOrderService.getOneOrder(id);
 			order.setStatus(OrderStatus.ARRIVE);
+			this.spOrderService.save(order);
 		} else {
 			System.out.println("권한이 없습니다");
 
@@ -155,15 +158,12 @@ public class SpOrderController {
 			Long id = spOrderForm.getId();
 			SpOrder order = spOrderService.getOneOrder(id);
 			order.setStatus(OrderStatus.END);
-			SpUser user = order.getSpuser();
-			String costomer = user.getUsername();
-			List<SpOrderDetail> orderlist = order.getOrderlist();
-			
-			for (SpOrderDetail spOrderDetail : orderlist) {
-				if (!this.productService.selectOneProduct(spOrderDetail.getProductid()).getCostomerList().contains(costomer)) {
-					this.productService.selectOneProduct(spOrderDetail.getProductid()).getCostomerList().add(costomer);
-				} // 구매자에게 리뷰권한
-			}
+			SpUser user = this.spUserService.findbyId(order.getUserid());
+			Long userid=user.getId();
+			Long productid=order.getProductid();
+			Product product=this.productService.selectOneProduct(productid);
+			product.addCustomer(userid);
+			this.productService.save(product);
 		} else {
 			System.out.println("권한이 없습니다");
 		}

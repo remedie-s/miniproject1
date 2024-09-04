@@ -12,13 +12,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 @Getter
 @Setter
@@ -45,17 +42,12 @@ public class SpUser {
 	private LocalDateTime create_date;
 	private SpUserGrade spuser_grade;
 	
-	@JsonIgnore
-	@OneToOne(mappedBy = "spuser", cascade = CascadeType.REMOVE)
-	private SpCart spcart;
 	
 	@JsonIgnore
 	@OneToMany(mappedBy = "spuser", cascade = CascadeType.REMOVE)
 	private List <SpAddress> addressList;
 	
-	@JsonIgnore
-	@OneToMany(mappedBy = "spuser", cascade = CascadeType.REMOVE)
-	private List <SpOrder> ordersList;
+	
 	
 	@JsonIgnore
 	@OneToMany(mappedBy = "spuser", cascade = CascadeType.REMOVE)

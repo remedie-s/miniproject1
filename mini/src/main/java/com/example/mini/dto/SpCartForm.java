@@ -1,6 +1,6 @@
 package com.example.mini.dto;
 
-import jakarta.persistence.Transient;
+import jakarta.validation.constraints.Min;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,9 +10,11 @@ import lombok.Setter;
 @NoArgsConstructor
 public class SpCartForm {
 
-	@Transient
+	
 	private Long id;
+	@Min(1)
 	private Long productid;
+	@Min(1)
 	private Long quantity;
 	
 }

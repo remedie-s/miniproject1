@@ -1,5 +1,6 @@
 package com.example.mini.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -41,5 +42,13 @@ public class SpCartService {
 		}
 		throw new DataNotFoundException("cart not found");
 	}
+
+    public List <SpCart> findByUserid(Long userid) {
+		List <SpCart> carts = this.spCartRepository.findByUserid(userid);
+        if(carts.isEmpty()){
+			throw new DataNotFoundException("cart 가 없어요");
+		}
+        return carts;
+    }
 
 }

@@ -37,4 +37,14 @@ public class SpOrderService {
         this.spOrderRepository.save(sporder);
     }
 
+    public List<SpOrder> findByUserid(Long userid) {
+       List <SpOrder> orders = this.spOrderRepository.findByUserid(userid);
+        if(orders.isEmpty()){
+			throw new DataNotFoundException("order 가 없어요");
+		}
+        return orders;
+
+       
+    }
+
 }

@@ -2,7 +2,6 @@ package com.example.mini.controller;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.mini.dto.SpCartForm;
 import com.example.mini.entity.SpCart;
-import com.example.mini.entity.SpCartDetail;
 import com.example.mini.entity.SpUser;
 import com.example.mini.service.ProductService;
 import com.example.mini.service.SpCartService;
@@ -49,76 +47,68 @@ public class SpCartController {
 		// PathVariable 있어야할까?
 		String name = principal.getName();
 		SpUser user = this.spUserService.findbyUsername(name);
-		SpCart spcart = user.getSpcart();
-		// if (spcart.getId() != id) {
-		// 	System.out.println("접근 권한이 없습니다.");
-		// 	return "index";
-		// }
-		List<SpCartDetail> cartlist = spcart.getCartlist();
+		Long userid = user.getId();
+		//TODO :카트리스트가 널일때 문제 터질수있음 고쳐야함
+		List<SpCart> cartlist = this.spCartService.findByUserid(userid);
+		
 		model.addAttribute("cartlist", cartlist);
-		// for (SpCartDetail spCartDetail : cartlist) {
-		// spCartDetail.getId();
-		// spCartDetail.getProduct().getImage_url();
-		// spCartDetail.getProduct().getProduct_name();
-		// spCartDetail.getProduct().getProduct_price();
-		// spCartDetail.getQuantity();
-		// }
 		return "cart_list";
 	}
 	
 	@PostMapping("/add")
 	public String addCart(@Valid SpCartForm spCartForm, BindingResult bindingResult,
 			Model model, Principal principal) {
+		if(bindingResult.hasErrors()){
+			return "product_list";
+		}
 		String name = principal.getName();
 		SpUser user = this.spUserService.findbyUsername(name);
-		SpCart spcart = user.getSpcart();
-
-		if (spcart == null) {
-			System.out.println("카트값 널인지 확인");
-			spcart = new SpCart();
-			spcart.setSpuser(user);
-			spcart.setCartlist(new ArrayList<SpCartDetail>());
-			spcart.setCreate_date(LocalDateTime.now());
-			this.spCartService.save(spcart);
-		}
-		// 브라우저에서 정상적으로 넘오는지 확인
+		Long userid = user.getId();
+		List<SpCart> spcart = this.spCartService.findByUserid(userid);
+		
 		Long productid = spCartForm.getProductid();
 		Long quantity = spCartForm.getQuantity();
+		// 브라우저에서 정상적으로 넘오는지 확인
 		System.out.println(productid);
 		System.out.println(quantity);
+		if (spcart.isEmpty()) {
+			System.out.println("카트값 널인지 확인");
+			SpCart cart = new SpCart();
+			cart.setUserid(userid);
+			cart.setProductid(productid);
+			cart.setQuantity(quantity);
+			cart.setCreate_date(LocalDateTime.now());
+			this.spCartService.save(cart);
+			return "redirect:/cart/list/" + userid;
+		}
 		System.out.println("카트리스트 카트리스트에 물건 양 등록");
 		System.out.println("프로덕트 값이 있나 확인");
-		// 프로덕트가 카트디테일에 존재하는가?
-		// 프로덕트 아이디 받아오기
 		boolean productispresent = false;
-		// if(spcart.getCartlist()!=null){
-			
-		// 	for (SpCartDetail spCartDetail : spcart.getCartlist()) {
-				
-		// 		if (spCartDetail.getProductid().equals(productid)) {
-		// 			// 프러덕트 아이디를 받아와서 확인
-		// 			spCartDetail.setQuantity(spCartDetail.getQuantity() + quantity);
-		// 			productispresent = true;
-		// 			System.out.println("물건이 있음");
-		// 			break;
-		// 		}
-		// 	}
-		// }
-
-		if (!productispresent) {
-			SpCartDetail cartDetail = new SpCartDetail();
-			System.out.println("물건이 없음");
-			cartDetail.setProductid(productid);
-			cartDetail.setQuantity(quantity);
-			cartDetail.setSpCart(spcart);
-
-			System.out.println("카트디테일"+cartDetail );
-			spcart.getCartlist().add(cartDetail);
+		if(!spcart.isEmpty()){
+			for (SpCart spCarts : spcart){
+				if (spCarts.getProductid().equals(productid)) {
+					// 프러덕트 아이디를 받아와서 확인
+					spCarts.setQuantity(spCarts.getQuantity() + quantity);
+					productispresent = true;
+					System.out.println("물건이 있음");
+					this.spCartService.save(spCarts);
+					return "redirect:/cart/list/" + userid;
+				}
+			}
 		}
-
-		this.spCartService.save(spcart);
-		System.out.println(spcart);
-		return "redirect:/product/list";
+		if (!productispresent) {
+			System.out.println("물건이 없음");
+			SpCart spcart1=new SpCart();
+			spcart1.setUserid(userid);
+			spcart1.setProductid(productid);
+			spcart1.setQuantity(quantity);
+			spcart1.setCreate_date(LocalDateTime.now());
+			System.out.println("물건이 없을때 넣는값"+spcart1 );
+			this.spCartService.save(spcart1);	
+		}
+		
+		
+		return "redirect:/cart/list/" + userid;
 	}
 
 	@GetMapping("/delete/{id}")
@@ -134,21 +124,14 @@ public class SpCartController {
 	public void sum(Principal principal, Model model) {
 		String name = principal.getName();
 		SpUser user = this.spUserService.findbyUsername(name);
-		SpCart spcart = user.getSpcart();
+		Long userid=user.getId();
+		List<SpCart> cartlist = this.spCartService.findByUserid(userid);
 		long sum = 0;
-		// 람다식 안에는 모두 상수만 들어가야함
-		// spcart.cartList.forEach((containsKey, continsValue) -> {
-		// long a = (containsKey.getProduct_price()) * continsValue;
-		// sum = sum + a;
-		// });
-		// for (Set<Entry<Product, Long>> entry : spcart.cartList.entrySet()) {
-		// String key = entry.getKey();
-		// String value = entry.getValue();
-		// }
-		if (spcart != null) {
-			for (SpCartDetail detail : spcart.getCartlist()) {
-				Long quantity = detail.getQuantity();
-				Long price= this.productService.selectOneProduct(detail.getProductid()).getProduct_price();
+		
+		if (cartlist != null) {
+			for (SpCart spcart : cartlist) {
+				Long quantity = spcart.getQuantity();
+				Long price= this.productService.selectOneProduct(spcart.getProductid()).getProduct_price();
 				// 프로덕트 아이디를 받아와서 프로덕트를 가져온다음  거기서 가격을 뽑아야함
 				sum += quantity * price;
 			}
