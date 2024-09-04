@@ -16,5 +16,7 @@ public class SpCartForm {
 	private Long productid;
 	@Min(1)
 	private Long quantity;
+	@Min(1)
+	private Long subtotal;
 	
 }

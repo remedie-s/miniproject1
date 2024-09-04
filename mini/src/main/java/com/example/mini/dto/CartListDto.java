@@ -14,5 +14,5 @@ public class CartListDto {
     private String product_name;
     private Long product_price;
     private Long quantity;
-    
+    private Long subtotal;
 }

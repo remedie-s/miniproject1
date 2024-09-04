@@ -1,8 +1,9 @@
 package com.example.mini.entity;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -32,7 +33,8 @@ public class Product {
 	private Long product_price;
 	private Long product_quantity;
 	private String image_url;
-	private List<Long> costomerList=new ArrayList<>();
+	private List<Long> costomerList;
+	@JsonIgnore
 	@OneToMany(cascade = CascadeType.REMOVE)
 	private List<Review> reviewList;
 	private LocalDateTime create_date;

@@ -26,9 +26,9 @@ public class ProductForm {
 	@Min(1) 
 	@Max(1_000_000)
 	private Long product_price;
-	//수량 1~1000
+	//수량 1~1000000
 	@Min(1) 
-	@Max(1_000)
+	@Max(1_000_000)
 	private Long product_quantity;
 	@NotEmpty(message = "이미지 주소는 비어선 안됩니다.")
 	private String image_url;

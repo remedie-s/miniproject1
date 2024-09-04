@@ -70,6 +70,7 @@ public class SpCartController {
 			cartListDto.setProduct_name(this.productService.selectOneProduct(spCart.getProductid()).getProduct_name());
 			cartListDto.setProduct_price(this.productService.selectOneProduct(spCart.getProductid()).getProduct_price());
 			cartListDto.setQuantity(spCart.getQuantity());
+			cartListDto.setSubtotal((this.productService.selectOneProduct(spCart.getProductid()).getProduct_price())*(spCart.getQuantity()));
 			cartlist.add(cartListDto);
 			Long quantity = spCart.getQuantity();
        		Long price = this.productService.selectOneProduct(spCart.getProductid()).getProduct_price();

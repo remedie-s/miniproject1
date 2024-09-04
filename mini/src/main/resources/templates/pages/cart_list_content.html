@@ -38,6 +38,7 @@
                                 <th>제품이름 </th>
                                 <th>제품가격</th>
                                 <th>제품수량</th>
+                                <th>제품별총가격</th>
                                 <th>삭제</th>
                             </tr>
                         </thead>
@@ -57,6 +58,9 @@
                                 </td>
                                 <td>
                                     <span th:text="${cartlistdto.quantity}"></span>
+                                </td>
+                                <td>
+                                    <span th:text="${cartlistdto.subtotal}"></span>
                                 </td>
                                 
                                 <td>

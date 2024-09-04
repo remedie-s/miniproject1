@@ -61,6 +61,7 @@ public class ProductController {
 	public String create(@Valid ProductForm productForm, BindingResult bindingResult, HttpServletResponse response) {
 		System.out.println("물품등록");
 		if (bindingResult.hasErrors()) {
+			bindingResult.getErrorCount();
 			System.out.println("에러발생");
 			return "product_form";
 		}
