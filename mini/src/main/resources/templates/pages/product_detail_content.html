@@ -48,7 +48,7 @@
             <div class="card-body login-card-body">
                 <p class="login-box-msg">카트에 넣기</p>
                 <form method="post" th:object="${spCartForm}" th:action="@{/cart/add}">
-                    <input type="hidden" id="product" name="product" th:field="*{product}" th:value="${product}" class="form-control">
+                    <input type="hidden" id="productid" name="productid" th:value="${product.id}" class="form-control">
                     <input type="number" id="quantity" name ="quantity" th:field="*{quantity}" class="form-control" placeholder="물건 수량">
                     <div class="input-group mb-3">
                         <input type="reset" value="초기화" class="btn btn-warning">

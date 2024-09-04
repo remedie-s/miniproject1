@@ -9,13 +9,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.mini.dto.SpCartForm;
-import com.example.mini.entity.Product;
 import com.example.mini.entity.SpCart;
 import com.example.mini.entity.SpCartDetail;
 import com.example.mini.entity.SpUser;
@@ -52,10 +50,10 @@ public class SpCartController {
 		String name = principal.getName();
 		SpUser user = this.spUserService.findbyUsername(name);
 		SpCart spcart = user.getSpcart();
-		if (spcart.getId() != id) {
-			System.out.println("접근 권한이 없습니다.");
-			return "index";
-		}
+		// if (spcart.getId() != id) {
+		// 	System.out.println("접근 권한이 없습니다.");
+		// 	return "index";
+		// }
 		List<SpCartDetail> cartlist = spcart.getCartlist();
 		model.addAttribute("cartlist", cartlist);
 		// for (SpCartDetail spCartDetail : cartlist) {
@@ -67,11 +65,9 @@ public class SpCartController {
 		// }
 		return "cart_list";
 	}
-
+	
 	@PostMapping("/add")
 	public String addCart(@Valid SpCartForm spCartForm, BindingResult bindingResult,
-			@ModelAttribute("product") Product product,
-			@ModelAttribute("quantity") Long quantity,
 			Model model, Principal principal) {
 		String name = principal.getName();
 		SpUser user = this.spUserService.findbyUsername(name);
@@ -86,25 +82,28 @@ public class SpCartController {
 			this.spCartService.save(spcart);
 		}
 		// 브라우저에서 정상적으로 넘오는지 확인
-		System.out.println(product);
+		Long productid = spCartForm.getProductid();
+		Long quantity = spCartForm.getQuantity();
+		System.out.println(productid);
 		System.out.println(quantity);
 		System.out.println("카트리스트 카트리스트에 물건 양 등록");
 		System.out.println("프로덕트 값이 있나 확인");
 		// 프로덕트가 카트디테일에 존재하는가?
-		Long productid = product.getId();
 		// 프로덕트 아이디 받아오기
 		boolean productispresent = false;
-		if(spCartDetail==null){break;}
-		for (SpCartDetail spCartDetail : spcart.getCartlist()) {
+		// if(spcart.getCartlist()!=null){
 			
-			if (spCartDetail.getProductid().equals(productid)) {
-				// 프러덕트 아이디를 받아와서 확인
-				spCartDetail.setQuantity(spCartDetail.getQuantity() + quantity);
-				productispresent = true;
-				System.out.println("물건이 있음");
-				break;
-			}
-		}
+		// 	for (SpCartDetail spCartDetail : spcart.getCartlist()) {
+				
+		// 		if (spCartDetail.getProductid().equals(productid)) {
+		// 			// 프러덕트 아이디를 받아와서 확인
+		// 			spCartDetail.setQuantity(spCartDetail.getQuantity() + quantity);
+		// 			productispresent = true;
+		// 			System.out.println("물건이 있음");
+		// 			break;
+		// 		}
+		// 	}
+		// }
 
 		if (!productispresent) {
 			SpCartDetail cartDetail = new SpCartDetail();

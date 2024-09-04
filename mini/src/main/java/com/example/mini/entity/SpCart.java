@@ -8,7 +8,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -17,11 +16,12 @@ import jakarta.persistence.OneToOne;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
 @Entity
-// @ToString
+@ToString
 @NoArgsConstructor
 public class SpCart {
 
@@ -34,7 +34,7 @@ public class SpCart {
 	@JsonIgnore
 	@OneToOne
 	private SpOrder sporder;
-	@OneToMany(mappedBy = "spCart", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "spCart", cascade = CascadeType.PERSIST)
 	private List<SpCartDetail> cartlist = new ArrayList<>();
 
 }
