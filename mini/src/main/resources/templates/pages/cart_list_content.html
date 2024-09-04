@@ -24,9 +24,7 @@
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
                     <li class="breadcrumb-item">
-                        <td>
-                            <span th:text="${cartSum}"></span>
-                        </td>
+                            <span th:text="${sum}"> 원 </span>
                     </li>
                 </ol>
             </div><!-- /.col -->
@@ -51,25 +49,25 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr th:each="cart, idx : ${cartlist}"> <!--  반복되는 가장 상위 요소 <= 반복문 적용 -->
+                            <tr th:each="cartlistdto, idx : ${cartlist}"> <!--  반복되는 가장 상위 요소 <= 반복문 적용 -->
                                 <td>
-                                    <span th:text="${cart.id}"></span>
+                                    <span th:text="${cartlistdto.id}"></span>
                                 </td>
                                 <td>
-                                    <img th:src="${cart.product.image_url}" alt="Product Image" style="width: 100px; height: auto;">
+                                    <img th:src="${cartlistdto.image_url}" alt="Product Image" style="width: 100px; height: auto;">
                                 </td>
                                 <td>
-                                    <span th:text="${cart.product.product_name}"></span>
+                                    <span th:text="${cartlistdto.product_name}"></span>
                                 </td>
                                 <td>
-                                    <span th:text="${cart.product.product_price}"></span>
+                                    <span th:text="${cartlistdto.product_price}"></span>
                                 </td>
                                 <td>
-                                    <span th:text="${cart.quantity}"></span>
+                                    <span th:text="${cartlistdto.quantity}"></span>
                                 </td>
                                 
                                 <td>
-                                    <a th:href="@{|/cart/delete/${ cart.id }|}" >   삭제  </a>
+                                    <a th:href="@{|/cart/delete/${ cartlistdto.id }|}" >   삭제  </a>
                                 </td>
 
                             </tr>

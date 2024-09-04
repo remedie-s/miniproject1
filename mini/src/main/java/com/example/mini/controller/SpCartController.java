@@ -2,6 +2,7 @@ package com.example.mini.controller;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.example.mini.dto.CartListDto;
 import com.example.mini.dto.SpCartForm;
 import com.example.mini.entity.SpCart;
 import com.example.mini.entity.SpUser;
@@ -48,8 +50,28 @@ public class SpCartController {
 		String name = principal.getName();
 		SpUser user = this.spUserService.findbyUsername(name);
 		Long userid = user.getId();
-		//TODO :카트리스트가 널일때 문제 터질수있음 고쳐야함
-		List<SpCart> cartlist = this.spCartService.findByUserid(userid);
+		List<SpCart> spcart;		
+		try {
+			spcart = this.spCartService.findByUserid(userid);
+			if(spcart==null){
+				spcart = new ArrayList<>();
+			}
+		} catch (Exception e) {
+			spcart = new ArrayList<>();
+			e.printStackTrace();
+			return "index";
+		}
+			ArrayList <CartListDto> cartlist = new ArrayList<>();
+		for (SpCart spCart : spcart) {
+			CartListDto cartListDto = new CartListDto();
+			cartListDto.setId(spCart.getProductid());
+			cartListDto.setImage_url(this.productService.selectOneProduct(spCart.getProductid()).getImage_url());
+			cartListDto.setProduct_name(this.productService.selectOneProduct(spCart.getProductid()).getProduct_name());
+			cartListDto.setProduct_price(this.productService.selectOneProduct(spCart.getProductid()).getProduct_price());
+			cartListDto.setQuantity(spCart.getQuantity());
+			cartlist.add(cartListDto);
+		}
+
 		
 		model.addAttribute("cartlist", cartlist);
 		return "cart_list";
@@ -64,7 +86,18 @@ public class SpCartController {
 		String name = principal.getName();
 		SpUser user = this.spUserService.findbyUsername(name);
 		Long userid = user.getId();
-		List<SpCart> spcart = this.spCartService.findByUserid(userid);
+
+		List<SpCart> spcart;
+		
+		try {
+			spcart = this.spCartService.findByUserid(userid);
+			if(spcart==null){
+				spcart = new ArrayList<>();
+			}
+		} catch (Exception e) {
+			spcart = new ArrayList<>();
+			e.printStackTrace();
+		}
 		
 		Long productid = spCartForm.getProductid();
 		Long quantity = spCartForm.getQuantity();
@@ -136,7 +169,7 @@ public class SpCartController {
 				sum += quantity * price;
 			}
 		}
-		model.addAttribute("sum", sum);
+		model.addAttribute("cartSum", sum);
 
 	}
 
