@@ -29,6 +29,8 @@ public class SpCartService {
 	}
 
 	public void save(SpCart spCart) {
+		System.out.println("11111"+spCart);
+
 		this.spCartRepository.save(spCart);
 	}
 

@@ -10,7 +10,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -35,9 +34,6 @@ public class Product {
 	@OneToMany(cascade = CascadeType.REMOVE)
 	private List<Review> reviewList;
 	private LocalDateTime create_date;
-	@OneToOne
-	private SpCartDetail spCartDetail;
-	@OneToOne
-	private SpOrder spOrder;
+	
 
 }

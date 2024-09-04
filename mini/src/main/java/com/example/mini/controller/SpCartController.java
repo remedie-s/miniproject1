@@ -1,6 +1,5 @@
 package com.example.mini.controller;
 
-import java.io.Serializable;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -20,6 +19,7 @@ import com.example.mini.entity.Product;
 import com.example.mini.entity.SpCart;
 import com.example.mini.entity.SpCartDetail;
 import com.example.mini.entity.SpUser;
+import com.example.mini.service.ProductService;
 import com.example.mini.service.SpCartService;
 import com.example.mini.service.SpUserService;
 
@@ -29,9 +29,10 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/cart")
 @Controller
 @RequiredArgsConstructor
-public class SpCartController implements Serializable {
+public class SpCartController {
 	private final SpCartService spCartService;
 	private final SpUserService spUserService;
+	private final ProductService productService;
 
 	@GetMapping("/list")
 	public String list(Model model, Principal principal) {
@@ -84,15 +85,20 @@ public class SpCartController implements Serializable {
 			spcart.setCreate_date(LocalDateTime.now());
 			this.spCartService.save(spcart);
 		}
-
+		// 브라우저에서 정상적으로 넘오는지 확인
 		System.out.println(product);
 		System.out.println(quantity);
 		System.out.println("카트리스트 카트리스트에 물건 양 등록");
 		System.out.println("프로덕트 값이 있나 확인");
-
+		// 프로덕트가 카트디테일에 존재하는가?
+		Long productid = product.getId();
+		// 프로덕트 아이디 받아오기
 		boolean productispresent = false;
+		if(spCartDetail==null){break;}
 		for (SpCartDetail spCartDetail : spcart.getCartlist()) {
-			if (spCartDetail.getProduct().equals(product)) {
+			
+			if (spCartDetail.getProductid().equals(productid)) {
+				// 프러덕트 아이디를 받아와서 확인
 				spCartDetail.setQuantity(spCartDetail.getQuantity() + quantity);
 				productispresent = true;
 				System.out.println("물건이 있음");
@@ -103,11 +109,11 @@ public class SpCartController implements Serializable {
 		if (!productispresent) {
 			SpCartDetail cartDetail = new SpCartDetail();
 			System.out.println("물건이 없음");
-			cartDetail.setProduct(product);
+			cartDetail.setProductid(productid);
 			cartDetail.setQuantity(quantity);
 			cartDetail.setSpCart(spcart);
 
-			System.out.println(cartDetail + "카트디테일");
+			System.out.println("카트디테일"+cartDetail );
 			spcart.getCartlist().add(cartDetail);
 		}
 
@@ -143,7 +149,8 @@ public class SpCartController implements Serializable {
 		if (spcart != null) {
 			for (SpCartDetail detail : spcart.getCartlist()) {
 				Long quantity = detail.getQuantity();
-				Long price = detail.getProduct().getProduct_price();
+				Long price= this.productService.selectOneProduct(detail.getProductid()).getProduct_price();
+				// 프로덕트 아이디를 받아와서 프로덕트를 가져온다음  거기서 가격을 뽑아야함
 				sum += quantity * price;
 			}
 		}

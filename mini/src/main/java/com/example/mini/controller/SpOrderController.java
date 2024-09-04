@@ -20,6 +20,7 @@ import com.example.mini.entity.SpCartDetail;
 import com.example.mini.entity.SpOrder;
 import com.example.mini.entity.SpOrderDetail;
 import com.example.mini.entity.SpUser;
+import com.example.mini.service.ProductService;
 import com.example.mini.service.SpOrderService;
 import com.example.mini.service.SpUserService;
 
@@ -32,6 +33,7 @@ import lombok.RequiredArgsConstructor;
 public class SpOrderController {
 	private final SpUserService spUserService;
 	private final SpOrderService spOrderService;
+	private final ProductService productService;
 
 	@GetMapping("/list")
 	public String orderList(Principal principal) {
@@ -94,7 +96,7 @@ public class SpOrderController {
 		List<SpCartDetail> cartlist = cart.getCartlist();
 		for (SpCartDetail spCartDetail : cartlist) {
 			SpOrderDetail spOrderDetail = new SpOrderDetail();
-			spOrderDetail.setProduct(spCartDetail.getProduct());
+			spOrderDetail.setProductid(spCartDetail.getProductid());
 			spOrderDetail.setQuantity(spCartDetail.getQuantity());
 			spOrder.getOrderlist().add(spOrderDetail);
 		}
@@ -156,9 +158,10 @@ public class SpOrderController {
 			SpUser user = order.getSpuser();
 			String costomer = user.getUsername();
 			List<SpOrderDetail> orderlist = order.getOrderlist();
+			
 			for (SpOrderDetail spOrderDetail : orderlist) {
-				if (!spOrderDetail.getProduct().getCostomerList().contains(costomer)) {
-					spOrderDetail.getProduct().getCostomerList().add(costomer);
+				if (!this.productService.selectOneProduct(spOrderDetail.getProductid()).getCostomerList().contains(costomer)) {
+					this.productService.selectOneProduct(spOrderDetail.getProductid()).getCostomerList().add(costomer);
 				} // 구매자에게 리뷰권한
 			}
 		} else {
