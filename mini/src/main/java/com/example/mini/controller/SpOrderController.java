@@ -2,6 +2,7 @@ package com.example.mini.controller;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.mini.config.OrderStatus;
+import com.example.mini.dto.OrderListDto;
 import com.example.mini.dto.SpCartForm;
 import com.example.mini.dto.SpOrderForm;
 import com.example.mini.entity.Product;
@@ -45,12 +47,39 @@ public class SpOrderController {
 	}
 
 	@GetMapping("/list/{id}")
-	public String orderList(Model model, @PathVariable("id") Long id, Principal principal) {
+	public String orderList(@PathVariable("id") Long id, Model model ,Principal principal) {
 		String name = principal.getName();
 		SpUser user = spUserService.findbyUsername(name);
 		Long userid = user.getId();
-		List<SpOrder> ordersList = this.spOrderService.findByUserid(userid);
-		model.addAttribute("orderList", ordersList);
+		List<SpOrder> spOrder;
+		try {
+			spOrder = this.spOrderService.findByUserid(userid);
+			if(spOrder==null){
+				spOrder = new ArrayList<>();
+			}
+		} catch (Exception e) {
+			spOrder = new ArrayList<>();
+			e.printStackTrace();
+			return "index";
+		}
+			ArrayList <OrderListDto> orderlist = new ArrayList<>();
+			long ordersum = 0;
+		for (SpOrder sporder : spOrder) {
+			OrderListDto orderListDto = new OrderListDto();
+			orderListDto.setId(sporder.getProductid());
+			orderListDto.setImage_url(this.productService.selectOneProduct(sporder.getProductid()).getImage_url());
+			orderListDto.setProduct_name(this.productService.selectOneProduct(sporder.getProductid()).getProduct_name());
+			orderListDto.setProduct_price(this.productService.selectOneProduct(sporder.getProductid()).getProduct_price());
+			orderListDto.setQuantity(sporder.getQuantity());
+			orderListDto.setSubtotal((this.productService.selectOneProduct(sporder.getProductid()).getProduct_price())*(sporder.getQuantity()));
+			orderListDto.setCreate_time(LocalDateTime.now());
+			orderlist.add(orderListDto);
+			Long quantity = sporder.getQuantity();
+       		Long price = this.productService.selectOneProduct(sporder.getProductid()).getProduct_price();
+        	ordersum += quantity * price;
+		}
+		model.addAttribute("ordersum", ordersum);
+		model.addAttribute("orderlist", orderlist);
 
 		return "order_list";
 	}
@@ -62,13 +91,14 @@ public class SpOrderController {
 		return "order_detail";
 	}
 
-	// 장바구니 있는지 탐색후 있으면 추가 없으면 생성
+	// 장바구니 있는지 탐색후 있으면 추가 없으면 홈페이지
 	@GetMapping("/create")
 	public String create(SpOrderForm spOrderForm,SpCartForm spCartForm, Model model,
 			Principal principal) {
 		String name = principal.getName();
 		SpUser user = spUserService.findbyUsername(name);
 		Long userid = user.getId();
+
 		List<SpCart> cartlist = this.spCartService.findByUserid(userid);
 		
 		// 카트 확인(비어있는지 확인)
@@ -81,7 +111,7 @@ public class SpOrderController {
 			return "order_form";
 		}
 	}
-
+	//TODO 고쳐야함
 	@PostMapping("/create")
 	public String create(@Valid SpOrderForm spOrderForm, BindingResult bindingResult,SpCartForm spCartForm ,Model model,
 			Principal principal) {

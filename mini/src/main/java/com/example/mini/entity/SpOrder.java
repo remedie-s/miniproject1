@@ -22,7 +22,7 @@ public class SpOrder {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+	private Long id;
 	private OrderStatus status = OrderStatus.READY;
 	private Boolean request = false;
 	private Long userid;
