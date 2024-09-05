@@ -13,19 +13,26 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.mini.dto.ProductForm;
+import com.example.mini.dto.ReviewForm;
 import com.example.mini.dto.SpCartForm;
 import com.example.mini.entity.Product;
+import com.example.mini.entity.Review;
 import com.example.mini.service.ProductService;
+import com.example.mini.service.ReviewService;
+import com.example.mini.service.SpUserService;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
 
 @RequestMapping("/product")
 @RequiredArgsConstructor
 @Controller
 public class ProductController {
 	private final ProductService productService;
+	private final SpUserService spUserService;
+	private final ReviewService	reviewService;
 
 	@GetMapping("/list")
 	public String list(Model model) {
@@ -119,5 +126,39 @@ public class ProductController {
 		System.out.println("권한없는 사용자입니다");
 		return "redirect:/product/list";
 	}
-
+	@PostMapping("/review/create/")
+	public String reviewCreate(Model model, @Valid ReviewForm reviewForm, BindingResult bindingResult, Principal principal){
+		String name = principal.getName();
+		Long userid = this.spUserService.findbyUsername(name).getId();
+		Product product = reviewForm.getProduct();
+		Long id=product.getId();
+		List<Long> costomerList = product.getCostomerList();
+		for (Long costomerid : costomerList) {
+			if(userid==costomerid){
+				if(bindingResult.hasErrors()){
+					System.out.println("리뷰 쓰기 중 에러가 있어요!");
+					return "product_list";
+				}
+				this.reviewService.create(product,reviewForm.getContent(), userid);
+				return "redirect:/product/detail/"+id;
+			}
+			
+		}
+		System.out.println("리뷰쓰기 권한이 없어요!");
+		return "product_list";
+	}
+	@GetMapping("/review/delete/{id}")
+	public String reviewDelete(Model model, @PathVariable("id") Long id, Principal principal) {
+		String name = principal.getName();
+		Long userid = this.spUserService.findbyUsername(name).getId();
+		Review review = this.reviewService.selectOneReview(id);
+		if(review.getUserid()==userid || name.equals("admin") || name.equals("seller")){
+			this.reviewService.delete(review);
+			System.out.println("리뷰 삭제 완료");
+		}
+		else{
+		System.out.println("리뷰쓰기 삭제 권한이 없어요!");}
+		return "redirect:/product/detail/"+id;
+	}
+	
 }

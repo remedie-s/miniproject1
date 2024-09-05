@@ -47,12 +47,6 @@ public class SpUser {
 	@OneToMany(mappedBy = "spuser", cascade = CascadeType.REMOVE)
 	private List <SpAddress> addressList;
 	
-	
-	
-	@JsonIgnore
-	@OneToMany(mappedBy = "spuser", cascade = CascadeType.REMOVE)
-	private List <Review> reviewList;
-	
 	@JsonIgnore
 	@OneToMany(mappedBy = "spuser", cascade = CascadeType.REMOVE)
 	private List <QnA_Post> qnA_PostList;

@@ -23,15 +23,15 @@ public class Review {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
-	@ManyToOne
-	private Product product;
-	@ManyToOne
-	private SpUser spuser;
-	@Column(length = 100)
-	private String subject;
+	
+	private Long userid;
+	
 	@Column(length = 500)
 	private String content;
 
 	private LocalDateTime create_date;
+
+	@ManyToOne
+	private Product product;
 
 }

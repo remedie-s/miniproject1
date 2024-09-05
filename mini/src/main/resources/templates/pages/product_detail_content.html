@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <title>Product Detail</title>
 </head>
+
 <body>
     <div th:fragment="frag_index_content" class="content-wrapper">
         <div class="content-header">
@@ -10,7 +12,8 @@
                 <div class="row mb-2">
                     <div class="col-sm-6">
                         <div>
-                            <img th:src="${product.image_url}" alt="Product Image" width="200" height="200" style="margin-left: 100px; "/>
+                            <img th:src="${product.image_url}" alt="Product Image" width="200" height="200"
+                                style="margin-left: 100px; " />
                         </div>
                     </div>
                     <div class="col-sm-6">
@@ -35,7 +38,9 @@
                                 <div class="card-text" th:text="${product.description}"></div>
                                 <div class="card-text" th:text="${product.product_price}"></div>
                                 <div class="card-text" th:text="${product.product_quantity}"></div>
-                                <a class="card-text" th:href="${product.image_url}"> <span th:text="${product.image_url}"> </span> </a>
+                                <a class="card-text" th:href="${product.image_url}"> 
+                                    <span th:text="${product.image_url}"> </span> 
+                                </a>
                             </div>
                         </div>
                         <a th:href="@{/product/modify/{id}(id=${product.id})}" class="btn btn-success">수정</a>
@@ -45,19 +50,32 @@
             </div>
         </div>
         <div class="card">
-            <div class="card-body login-card-body">
-                <p class="login-box-msg">카트에 넣기</p>
-                <form method="post" th:object="${spCartForm}" th:action="@{/cart/add}">
-                    <input type="hidden" id="productid" name="productid" th:value="${product.id}" class="form-control">
-                    <input type="number" id="quantity" name ="quantity" th:field="*{quantity}" class="form-control" placeholder="물건 수량" required min="1" step="1">
-                    <div class="input-group mb-3">
-                        <input type="reset" value="초기화" class="btn btn-warning">
-                        &nbsp;
-                        <input type="submit" value="카트 등록" class="btn btn-warning">
-                    </div>
-                </form>
-            </div>
+            <p class="login-box-msg">카트에 넣기</p>
+            <form method="post" th:object="${spCartForm}" th:action="@{/cart/add}">
+                <input type="hidden" id="productid" name="productid" th:value="${product.id}" class="form-control">
+                <input type="number" id="quantity" name="quantity" th:field="*{quantity}" class="form-control"
+                    placeholder="물건 수량" required min="1" step="1">
+                <div class="input-group mb-3">
+                    <input type="reset" value="초기화" class="btn btn-warning">
+                    &nbsp;
+                    <input type="submit" value="카트 등록" class="btn btn-warning">
+                </div>
+            </form>
+        </div>
+        <div class="card">
+            <p class="login-box-msg">리뷰 입력</p>
+            <form method="post" th:object="${reviewForm}" th:action="@{/product/review/create}">
+                <input type="hidden" id="product" name="product" th:value="${product}" class="form-control">
+                <input type="text" id="content" name="content" th:field="*{content}" class="form-control"
+                    placeholder="물건 수량" required>
+                <div class="input-group mb-3">
+                    <input type="reset" value="초기화" class="btn btn-warning">
+                    &nbsp;
+                    <input type="submit" value="리뷰 입력" class="btn btn-warning">
+                </div>
+            </form>
         </div>
     </div>
 </body>
+
 </html>

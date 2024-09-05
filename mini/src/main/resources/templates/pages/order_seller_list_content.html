@@ -59,7 +59,6 @@
                                 </td>
                                 <td>
                                     <span th:text="${orderListDto.subtotal}"></span>
-                                    <span th:text="${orderListDto.status}"></span>
                                 </td>
                                 <td th:switch="${orderListDto.status}">
                                     <span th:case="0"> 주문접수 </span>
