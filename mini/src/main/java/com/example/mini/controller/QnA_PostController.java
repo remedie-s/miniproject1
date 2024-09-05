@@ -1,5 +1,6 @@
 package com.example.mini.controller;
 
+import java.security.Principal;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
@@ -15,7 +16,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.example.mini.dto.QnAPostForm;
 import com.example.mini.dto.QnAReveiwForm;
 import com.example.mini.entity.QnA_Post;
+import com.example.mini.entity.SpUser;
 import com.example.mini.service.QnA_PostService;
+import com.example.mini.service.QnA_ReviewService;
+import com.example.mini.service.SpUserService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,35 +29,45 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/qna/post")
 public class QnA_PostController {
 	private final QnA_PostService qnA_PostService;
+	private final QnA_ReviewService qnA_ReviewService;
+	private final SpUserService spUserService;
 
 	@GetMapping("/list")
 	public String list(Model model) {
-		List<QnA_Post> posts = this.qnA_PostService.getAllPost();
+		List<QnA_Post> postlist = this.qnA_PostService.getAllPost();
 
-		model.addAttribute("posts", posts);
+		model.addAttribute("postlist", postlist);
 		return "qna_post_list";
 	}
 
 	@GetMapping("/detail/{id}")
 	public String detail(Model model, @PathVariable("id") Integer id,
-			QnAReveiwForm reviewForm) {
+			QnAReveiwForm reviewForm, Principal principal) {
 		QnA_Post post = this.qnA_PostService.getOnePost(id);
+		String username = principal.getName();
+		System.out.println(post.getReviewsList());
 		model.addAttribute("post", post);
+		model.addAttribute("username", username);
 		return "qna_post_detail";
 	}
 
 	@GetMapping("/create")
-	public String create(Model model, QnAPostForm qnAPostFormostForm) {
-		model.addAttribute("method", "post");
+	public String create(Model model, QnAPostForm qnAPostFormostForm, Principal principal) {
+		SpUser user = this.spUserService.findbyUsername(principal.getName());
+		long userid = user.getId();
+		model.addAttribute("userid", userid);
+
 		return "qna_post_form";
 	}
 
 	@PostMapping("/create")
 	public String create(@Valid QnAPostForm qnAPostForm, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
+			System.out.println("에러가 있어요");
 			return "qna_post_form";
 		}
-		this.qnA_PostService.create(qnAPostForm.getSubject(), qnAPostForm.getContent());
+		this.qnA_PostService.create(qnAPostForm.getSubject(), qnAPostForm.getContent(), qnAPostForm.getUserid());
+		System.out.println("저장합니다");
 		return "redirect:/qna/post/list";
 	}
 

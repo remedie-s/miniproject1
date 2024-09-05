@@ -42,11 +42,13 @@ public class QnA_PostService {
 		throw new DataNotFoundException("post not found");
 	}
 
-	public void create(String subject, String content) {
+	public void create(String subject, String content, Long userid) {
 		QnA_Post qnA_Post = new QnA_Post();
 		qnA_Post.setSubject(subject);
 		qnA_Post.setContent(content);
-		qnA_Post.setCreate_date(LocalDateTime.now());
+		qnA_Post.setUserid(userid);
+		qnA_Post.setCreateDate(LocalDateTime.now());
+		this.qnA_PostRepository.save(qnA_Post);
 	}
 
 	public void modify(QnA_Post qnA_Post) {

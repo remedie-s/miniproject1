@@ -31,8 +31,9 @@ public class SecurityConfig {
 				.authorizeHttpRequests((a) -> a.requestMatchers(new AntPathRequestMatcher("/product/upload/**"))
 						.hasAnyRole("SELLER", "ADMIN"))
 				.authorizeHttpRequests((a) -> a.requestMatchers(new AntPathRequestMatcher("/qna/post/**")).permitAll())
-				.authorizeHttpRequests((a) -> a.requestMatchers(new AntPathRequestMatcher("/qna/review/**"))
-						.hasAnyRole("SELLER", "ADMIN"))
+				.authorizeHttpRequests(
+						(a) -> a.requestMatchers(new AntPathRequestMatcher("/qna/review/**")).permitAll())
+
 				.authorizeHttpRequests((a) -> a.requestMatchers(new AntPathRequestMatcher("/product/**")).permitAll())
 				.authorizeHttpRequests(
 						(a) -> a.requestMatchers(new AntPathRequestMatcher("/product/detail/**")).permitAll())

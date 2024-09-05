@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+
+<div th:fragment="frag_index_content"  class="content-wrapper">
+	
+	<div class="content-header">
+        <div class="container-fluid">
+          <div class="row mb-2">
+            <div class="col-sm-6">
+              <h1 class="m-0">질문 상세보기</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+              <ol class="breadcrumb float-sm-right">
+                <li class="breadcrumb-item"><a href="/index">Home</a></li>
+                <li class="breadcrumb-item active"><a href="/qna/post/list">QnA 목록</a></li>                
+              </ol>
+            </div><!-- /.col -->
+          </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+      </div>
+ 
+ 	<section class="content">
+        <div class="container-fluid">
+          <!-- Small boxes (Stat box) -->
+          <div class="row">
+            <div class="col-lg-12 col-12">
+                 
+					<div class="container my-3">
+					
+						<div class="card my-3">
+							<div class="card-header">
+							
+								<h3 th:text="${ post.subject}"></h3>
+                                
+							</div>
+							<div class="card-body">
+                                <div th:text="${ username }"></div>
+								<div class="card-text" th:text="${ post.content }"></div>
+							
+								<div class="badge bg-light text-primary text-start" th:text="${ #temporals.format( post.getCreateDate(), 'yyyy-MM-dd HH:mm:ss')  }"></div>
+							</div>
+						</div>	
+						
+						<a th:href="|/qna/post/modify/${post.id}|" class="btn btn-success">수정</a>
+					    <a th:href="|/qna/post/delete/${post.id}|" class="btn btn-danger">삭제</a>
+					
+						<!-- <form method="delete" th:action="@{|/post/delete/${post.id}|}">
+							<input type="submit" value="삭제" class="btn btn-danger">
+						</form> -->
+					   
+					</div>
+					
+					<!-- 리뷰 등록 -->
+					<div class="container my-3">
+						<h3 class="border-bottom py-2 my-3"
+							th:text="|리뷰 ${#lists.size(post.reviewsList)}개|"
+						></h3>
+						<h3 class="border-bottom py-2 my-3">리뷰 등록</h3>
+						
+						<form th:action="@{|/qna/review/create/${post.id}|}" method="post"	th:object="${qnAReviewForm}" >
+							
+							<input type="text" name="content" id="content" />
+							<input type="submit" value="리뷰 등록"/>
+						</form>
+					</div>
+					
+					<!-- 리뷰 목록 노출 -->
+					<div class="container my-3">
+						<!-- 실습 5분, 리뷰 내용, 작성시간을 리스트로 표현하시오 -->
+						
+						<div class="card my-3 bg-warning" th:each="review : ${post.reviewsList}">
+							<div class="card-body">				
+								<div class="card-text">
+									[[ |${ review.content} - 
+									    ${ #temporals.format( review.getCreateDate(), 'yyyy-MM-dd HH:mm:ss')  }|  ]]
+								</div>
+							</div>
+							<div class="card-footer">
+								<a th:href="|/qna/review/modify/${review.id}|" class="btn btn-info">수정</a>
+								<a th:href="|/qna/review/delete/${review.id}|" class="btn btn-danger">삭제</a>
+							</div>
+							
+						</div>
+						
+					</div>
+
+
+			</div>
+		  </div>
+	    </div>
+    </section>
+</div>
+	

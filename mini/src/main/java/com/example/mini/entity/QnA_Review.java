@@ -22,7 +22,7 @@ public class QnA_Review {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+	private Long id;
 
 	@ManyToOne
 	private SpUser spuser;

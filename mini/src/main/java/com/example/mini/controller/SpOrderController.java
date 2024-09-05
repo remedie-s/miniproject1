@@ -164,41 +164,45 @@ public class SpOrderController {
 	}
 
 	@GetMapping("/seller/list")
-	public String orderSellerList(Principal principal, Model model) {
+	public String orderSellerList(Principal principal,
+			@RequestParam(name = "page", defaultValue = "0") int page,
+			@RequestParam(name = "size", defaultValue = "10") int size,
+			Model model) {
+
 		if (!principal.getName().equals("seller") && !principal.getName().equals("admin")) {
 			return "order_list";
 		}
-		List<SpOrder> spOrder;
+
+		PageRequest pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createTime"));
+		Page<SpOrder> spOrderp;
 		try {
-			spOrder = this.spOrderService.getAllOrder();
-			if (spOrder == null) {
-				spOrder = new ArrayList<>();
+			spOrderp = this.spOrderService.getAllOrder(pageable);
+			if (spOrderp == null) {
+				spOrderp = Page.empty();
 			}
 		} catch (Exception e) {
-			spOrder = new ArrayList<>();
+			spOrderp = Page.empty();
 			e.printStackTrace();
 			return "index";
 		}
+
 		ArrayList<OrderListDto> orderlist = new ArrayList<>();
 		long ordersum = 0;
-		for (SpOrder sporder : spOrder) {
+		for (SpOrder sporder : spOrderp.getContent()) {
 			if (!sporder.getStatus().equals(3)) {
 				OrderListDto orderListDto = new OrderListDto();
 				orderListDto.setId(sporder.getProductid());
 				orderListDto.setImage_url(this.productService.selectOneProduct(sporder.getProductid()).getImage_url());
-				orderListDto
-						.setProduct_name(
-								this.productService.selectOneProduct(sporder.getProductid()).getProduct_name());
-				orderListDto
-						.setProduct_price(
-								this.productService.selectOneProduct(sporder.getProductid()).getProduct_price());
+				orderListDto.setProduct_name(
+						this.productService.selectOneProduct(sporder.getProductid()).getProduct_name());
+				orderListDto.setProduct_price(
+						this.productService.selectOneProduct(sporder.getProductid()).getProduct_price());
 				orderListDto.setQuantity(sporder.getQuantity());
-				orderListDto
-						.setSubtotal((this.productService.selectOneProduct(sporder.getProductid()).getProduct_price())
-								* (sporder.getQuantity()));
-				orderListDto.setRequest(this.spOrderService.getOneOrder(sporder.getId()).getRequest());
-				orderListDto.setStatus(this.spOrderService.getOneOrder(sporder.getId()).getStatus());
-				orderListDto.setCreateTime(this.spOrderService.getOneOrder(sporder.getId()).getCreateTime());
+				orderListDto.setSubtotal(this.productService.selectOneProduct(sporder.getProductid()).getProduct_price()
+						* sporder.getQuantity());
+				orderListDto.setRequest(sporder.getRequest());
+				orderListDto.setStatus(sporder.getStatus());
+				orderListDto.setCreateTime(sporder.getCreateTime());
 				orderListDto.setOrderid(sporder.getId());
 				orderlist.add(orderListDto);
 				Long quantity = sporder.getQuantity();
@@ -206,47 +210,56 @@ public class SpOrderController {
 				ordersum += quantity * price;
 			}
 		}
+
 		model.addAttribute("ordersum", ordersum);
 		model.addAttribute("orderlist", orderlist);
+		model.addAttribute("currentPage", page);
+		model.addAttribute("totalPages", spOrderp.getTotalPages());
+		model.addAttribute("totalItems", spOrderp.getTotalElements());
+
 		return "order_seller_list";
 	}
 
 	@GetMapping("/seller/list/complete")
-	public String orderSellerListCom(Principal principal, Model model) {
+	public String orderSellerListCom(Principal principal,
+			@RequestParam(name = "page", defaultValue = "0") int page,
+			@RequestParam(name = "size", defaultValue = "10") int size,
+			Model model) {
+
 		if (!principal.getName().equals("seller") && !principal.getName().equals("admin")) {
 			return "order_list";
 		}
-		List<SpOrder> spOrder;
+
+		PageRequest pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createTime"));
+		Page<SpOrder> spOrderp;
 		try {
-			spOrder = this.spOrderService.getAllOrder();
-			if (spOrder == null) {
-				spOrder = new ArrayList<>();
+			spOrderp = this.spOrderService.getAllOrder(pageable);
+			if (spOrderp == null) {
+				spOrderp = Page.empty();
 			}
 		} catch (Exception e) {
-			spOrder = new ArrayList<>();
+			spOrderp = Page.empty();
 			e.printStackTrace();
 			return "index";
 		}
+
 		ArrayList<OrderListDto> orderlist = new ArrayList<>();
 		long ordersum = 0;
-		for (SpOrder sporder : spOrder) {
+		for (SpOrder sporder : spOrderp.getContent()) {
 			if (sporder.getStatus().equals(3)) {
 				OrderListDto orderListDto = new OrderListDto();
 				orderListDto.setId(sporder.getProductid());
 				orderListDto.setImage_url(this.productService.selectOneProduct(sporder.getProductid()).getImage_url());
-				orderListDto
-						.setProduct_name(
-								this.productService.selectOneProduct(sporder.getProductid()).getProduct_name());
-				orderListDto
-						.setProduct_price(
-								this.productService.selectOneProduct(sporder.getProductid()).getProduct_price());
+				orderListDto.setProduct_name(
+						this.productService.selectOneProduct(sporder.getProductid()).getProduct_name());
+				orderListDto.setProduct_price(
+						this.productService.selectOneProduct(sporder.getProductid()).getProduct_price());
 				orderListDto.setQuantity(sporder.getQuantity());
-				orderListDto
-						.setSubtotal((this.productService.selectOneProduct(sporder.getProductid()).getProduct_price())
-								* (sporder.getQuantity()));
-				orderListDto.setRequest(this.spOrderService.getOneOrder(sporder.getId()).getRequest());
-				orderListDto.setStatus(this.spOrderService.getOneOrder(sporder.getId()).getStatus());
-				orderListDto.setCreateTime(this.spOrderService.getOneOrder(sporder.getId()).getCreateTime());
+				orderListDto.setSubtotal(this.productService.selectOneProduct(sporder.getProductid()).getProduct_price()
+						* sporder.getQuantity());
+				orderListDto.setRequest(sporder.getRequest());
+				orderListDto.setStatus(sporder.getStatus());
+				orderListDto.setCreateTime(sporder.getCreateTime());
 				orderListDto.setOrderid(sporder.getId());
 				orderlist.add(orderListDto);
 				Long quantity = sporder.getQuantity();
@@ -254,8 +267,13 @@ public class SpOrderController {
 				ordersum += quantity * price;
 			}
 		}
+
 		model.addAttribute("ordersum", ordersum);
 		model.addAttribute("orderlist", orderlist);
+		model.addAttribute("currentPage", page);
+		model.addAttribute("totalPages", spOrderp.getTotalPages());
+		model.addAttribute("totalItems", spOrderp.getTotalElements());
+
 		return "order_seller_list";
 	}
 

@@ -12,7 +12,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class QnAReveiwForm {
     @Transient
-    private Integer id;
+    private Long id;
     @NotEmpty(message = "답변은 비어선 안됩니다.")
     @Column(length = 500)
     private String content;
