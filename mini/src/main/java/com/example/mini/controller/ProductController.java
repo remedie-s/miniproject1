@@ -48,7 +48,10 @@ public class ProductController {
 	public String detail(Model model, @PathVariable("id") Long id, ProductForm productForm, SpCartForm spCartForm) {
 		ReviewForm reviewForm = new ReviewForm();
 		Product product = this.productService.selectOneProduct(id);
+		List<Review> reviewList = this.reviewService.findByProductid(id);
+		
 		model.addAttribute("product", product);
+		model.addAttribute("reviewlist",reviewList);
 		return "product_detail";
 
 	}
@@ -165,13 +168,14 @@ public class ProductController {
 		String name = principal.getName();
 		Long userid = this.spUserService.findbyUsername(name).getId();
 		Review review = this.reviewService.selectOneReview(id);
+		long productid=review.getProduct().getId();
 		if(review.getUserid()==userid || name.equals("admin") || name.equals("seller")){
 			this.reviewService.delete(review);
 			System.out.println("리뷰 삭제 완료");
 		}
 		else{
 		System.out.println("리뷰쓰기 삭제 권한이 없어요!");}
-		return "redirect:/product/detail/"+id;
+		return "redirect:/product/detail/"+productid;
 	}
 	
 }

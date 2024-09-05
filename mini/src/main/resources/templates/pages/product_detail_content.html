@@ -65,7 +65,33 @@
                 </div>
             </form>
         </div>
-       
+        <table class="table">
+            <thead class="table-warning">
+                <tr>
+                    <th>리뷰 번호</th>
+                    <th>유저 아이디</th>
+                    <th>상품평</th>
+                    <th>삭제</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="review, idx : ${reviewlist}"> <!--  반복되는 가장 상위 요소 <= 반복문 적용 -->
+                    <td>
+                        <span th:text="${review.id}"></span>
+                    </td>
+                    <td>
+                        <span th:text="${review.userid}"></span>
+                    </td>
+                    <td>
+                        <span th:text="${review.content}"></span>
+                    </td>
+                    <td>
+                        <a th:href="@{|/product/review/delete/${ review.id }|}" >   삭제  </a>
+                    </td>
+
+                </tr>
+            </tbody>
+        </table>
 
     </div>
 </body>
