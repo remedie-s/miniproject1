@@ -68,7 +68,7 @@
                                     <span th:case="*"> 상태 불명 </span>
                                 </td>
                                 <td>
-                                    <span th:text="${orderListDto.create_time}"></span>
+                                    <span th:text="${orderListDto.createTime}"></span>
                                 </td>
                                 <td>
                                     <a th:href="@{|/order/accept/${ orderListDto.orderid }|}"> 주문승인 </a>

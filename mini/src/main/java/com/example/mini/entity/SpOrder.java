@@ -25,7 +25,7 @@ public class SpOrder {
 	private Integer request;
 	private Long userid;
 	private Long productid;
-    private Long quantity;
-	private LocalDateTime create_time;
+	private Long quantity;
+	private LocalDateTime createTime;
 
 }

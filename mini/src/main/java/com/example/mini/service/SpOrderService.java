@@ -3,6 +3,8 @@ package com.example.mini.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.example.mini.entity.SpOrder;
@@ -15,6 +17,18 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class SpOrderService {
     private final SpOrderRepository spOrderRepository;
+
+    public Page<SpOrder> getAllOrder(Pageable pageable) {
+        return this.spOrderRepository.findAll(pageable);
+    }
+
+    public Page<SpOrder> findByUserid(Long userid, Pageable pageable) {
+        Page<SpOrder> orders = this.spOrderRepository.findByUserid(userid, pageable);
+        if (orders.isEmpty()) {
+            throw new DataNotFoundException("order 가 없어요");
+        }
+        return orders;
+    }
 
     public List<SpOrder> getAllOrder() {
         List<SpOrder> orderlist = this.spOrderRepository.findAll();
