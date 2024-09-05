@@ -32,19 +32,22 @@
                     <div class="container my-3">
                         <div class="card my-3">
                             <div class="card-header">
-                                <h3 th:text="${product.product_name}"></h3>
+                                제품명 <h3 th:text="${product.product_name}"></h3>
                             </div>
                             <div class="card-body">
-                                <div class="card-text" th:text="${product.description}"></div>
-                                <div class="card-text" th:text="${product.product_price}"></div>
-                                <div class="card-text" th:text="${product.product_quantity}"></div>
-                                <a class="card-text" th:href="${product.image_url}"> 
-                                    <span th:text="${product.image_url}"> </span> 
+                             제품 설명 :   <span class="card-text" th:text="${product.description}"></span>
+                             <br>
+                             제품 가격 :  <span class="card-text" th:text="${product.product_price}"></span>
+                             <br>
+                             제품 재고 :   <span class="card-text" th:text="${product.product_quantity}"></span>
+                             <br>
+                             제품 사진 URL :  <a class="card-text" th:href="${product.image_url}"><span th:text="${product.image_url}"> </span>
                                 </a>
                             </div>
                         </div>
                         <a th:href="@{/product/modify/{id}(id=${product.id})}" class="btn btn-success">수정</a>
                         <a th:href="@{/product/delete/{id}(id=${product.id})}" class="btn btn-danger">삭제</a>
+                        <a th:href="@{/product/review/create/{id}(id=${product.id})}" class="btn btn-primary">리뷰입력</a>
                     </div>
                 </div>
             </div>
@@ -62,19 +65,8 @@
                 </div>
             </form>
         </div>
-        <div class="card">
-            <p class="login-box-msg">리뷰 입력</p>
-            <form method="post" th:object="${reviewForm}" th:action="@{/product/review/create}">
-                <input type="hidden" id="product" name="product" th:value="${product}" class="form-control">
-                <input type="text" id="content" name="content" th:field="*{content}" class="form-control"
-                    placeholder="물건 수량" required>
-                <div class="input-group mb-3">
-                    <input type="reset" value="초기화" class="btn btn-warning">
-                    &nbsp;
-                    <input type="submit" value="리뷰 입력" class="btn btn-warning">
-                </div>
-            </form>
-        </div>
+       
+
     </div>
 </body>
 

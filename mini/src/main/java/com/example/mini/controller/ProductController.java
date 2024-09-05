@@ -46,6 +46,7 @@ public class ProductController {
 
 	@GetMapping("/detail/{id}")
 	public String detail(Model model, @PathVariable("id") Long id, ProductForm productForm, SpCartForm spCartForm) {
+		ReviewForm reviewForm = new ReviewForm();
 		Product product = this.productService.selectOneProduct(id);
 		model.addAttribute("product", product);
 		return "product_detail";
@@ -126,20 +127,32 @@ public class ProductController {
 		System.out.println("권한없는 사용자입니다");
 		return "redirect:/product/list";
 	}
-	@PostMapping("/review/create/")
+	@GetMapping("/review/create/{id}")
+	public String reviewCreate(@PathVariable("id") long id, Principal principal, Model model){
+		Product product = this.productService.selectOneProduct(id);
+		ReviewForm reviewForm = new ReviewForm();
+		reviewForm.setProductid(id);
+		model.addAttribute("product", product);
+		model.addAttribute("reviewForm", reviewForm);
+		return "product_review_form";
+	}
+	@PostMapping("/review/create/{id}")
 	public String reviewCreate(Model model, @Valid ReviewForm reviewForm, BindingResult bindingResult, Principal principal){
 		String name = principal.getName();
 		Long userid = this.spUserService.findbyUsername(name).getId();
-		Product product = reviewForm.getProduct();
+		Long productid=reviewForm.getProductid();
+		Product product = this.productService.selectOneProduct(productid);
 		Long id=product.getId();
 		List<Long> costomerList = product.getCostomerList();
+		System.out.println(costomerList);
 		for (Long costomerid : costomerList) {
 			if(userid==costomerid){
 				if(bindingResult.hasErrors()){
 					System.out.println("리뷰 쓰기 중 에러가 있어요!");
 					return "product_list";
 				}
-				this.reviewService.create(product,reviewForm.getContent(), userid);
+				this.reviewService.create(product,reviewForm.getContents(), userid);
+				System.out.println("리뷰 등록 완료");
 				return "redirect:/product/detail/"+id;
 			}
 			

@@ -302,6 +302,8 @@ public class SpOrderController {
 			}
 			product.addCustomer(userid);
 			this.productService.save(product);
+			System.out.println(product.getCostomerList().size());
+			System.out.println(product.getCostomerList());
 			return "redirect:/order/seller/list";
 		} else {
 			System.out.println("권한이 없습니다");

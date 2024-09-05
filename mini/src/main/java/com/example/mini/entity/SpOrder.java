@@ -21,8 +21,8 @@ public class SpOrder {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	private Integer status = 0;
-	private Integer request = 0;
+	private Integer status;
+	private Integer request;
 	private Long userid;
 	private Long productid;
     private Long quantity;

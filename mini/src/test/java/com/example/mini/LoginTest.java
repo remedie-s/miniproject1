@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 public class LoginTest {
 	@Autowired
 	private SpUserRepository spUserRepository;
+
 	
 	@Test
 	void loginTest() {

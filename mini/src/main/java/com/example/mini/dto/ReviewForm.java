@@ -1,8 +1,6 @@
 
 package com.example.mini.dto;
 
-import com.example.mini.entity.Product;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,7 +8,7 @@ import lombok.Setter;
 @Setter
 public class ReviewForm {
     private Long id;
-    private Product product;
-    private String content;
+    private Long productid;
+    private String contents;
     private Long userid;
 }
