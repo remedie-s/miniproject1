@@ -11,7 +11,7 @@ import lombok.Setter;
 public class SpOrderForm {
 	@Transient
 	private Long id;
-	private String status;
-	private String request;
+	private Integer status;
+	private Integer request;
 
 }

@@ -60,13 +60,16 @@
                                 <td>
                                     <span th:text="${orderListDto.subtotal}"></span>
                                 </td>
-                                <td>
-                                    <span th:text="${orderListDto.status}"></span>
+                                <td th:switch="${orderListDto.status}">
+                                    <span th:case="0"> 주문접수 </span>
+                                    <span th:case="1"> 주문승인 </span>
+                                    <span th:case="2"> 배송도착 </span>
+                                    <span th:case="3"> 주문닫힘 </span>
                                 </td>
                                 <td>
                                     <span th:text="${orderListDto.create_time}"></span>
                                 </td>
-                                <!-- id값을 오더ID로 집어넣어야하는데 오더 ID를 어떻게 구해야할까 -->
+                                
                                 <td>                                    
                                     <a th:href="@{|/order/delete/${ orderListDto.orderid }|}"> 반품신청 </a>
                                 </td>

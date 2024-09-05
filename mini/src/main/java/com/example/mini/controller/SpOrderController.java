@@ -77,7 +77,9 @@ public class SpOrderController {
 			orderListDto.setQuantity(sporder.getQuantity());
 			orderListDto.setSubtotal((this.productService.selectOneProduct(sporder.getProductid()).getProduct_price())
 					* (sporder.getQuantity()));
-			orderListDto.setCreate_time(LocalDateTime.now());
+			orderListDto.setRequest(this.spOrderService.getOneOrder(sporder.getId()).getRequest());
+			orderListDto.setStatus(this.spOrderService.getOneOrder(sporder.getId()).getStatus());
+			orderListDto.setCreate_time(this.spOrderService.getOneOrder(sporder.getId()).getCreate_time());
 			orderListDto.setOrderid(sporder.getId());
 			orderlist.add(orderListDto);
 			Long quantity = sporder.getQuantity();
@@ -136,19 +138,26 @@ public class SpOrderController {
 		System.out.println("카트가 들어있습니다.");
 		// 카트에서 카트리스트 가져온후 오더에 있는 리스트에 복사
 		for (SpCart spCart : cartlist) {
+			Product orderedProduct = this.productService.selectOneProduct(spCart.getProductid());
+			if(orderedProduct.getProduct_quantity()>=spCart.getQuantity()){
 			SpOrder spOrder = new SpOrder();
 			spOrder.setUserid(userid);
 			spOrder.setProductid(spCart.getProductid());
 			spOrder.setQuantity(spCart.getQuantity());
 			spOrder.setCreate_time(LocalDateTime.now());
-			spOrder.setStatus("주문 접수 완료");
-			spOrder.setRequest("false");
+			spOrder.setStatus(1);
+			spOrder.setRequest(1);
 			this.spOrderService.save(spOrder);
+			//주문 생성시 주문한 물품 재고량에서 뺌
+			orderedProduct.setProduct_quantity(orderedProduct.getProduct_quantity()-spCart.getQuantity());
 			System.out.println("주문생성 완료1");
+			}
+			else{System.out.println("재고량보다 주문물품수량이 많습니다.");}
 		}
 		System.out.println("주문생성 완료2");
 		System.out.println("카트 삭제");
 		this.spCartService.deleteByUserid(userid);
+		
 
 		return "redirect:/order/list/"+userid;
 	}
@@ -172,7 +181,7 @@ public class SpOrderController {
 		ArrayList<OrderListDto> orderlist = new ArrayList<>();
 		long ordersum = 0;
 		for (SpOrder sporder : spOrder) {
-			if(!sporder.getStatus().equals("주문닫힘")){
+			if(!sporder.getStatus().equals(3)){
 			OrderListDto orderListDto = new OrderListDto();
 			orderListDto.setId(sporder.getProductid());
 			orderListDto.setImage_url(this.productService.selectOneProduct(sporder.getProductid()).getImage_url());
@@ -183,7 +192,9 @@ public class SpOrderController {
 			orderListDto.setQuantity(sporder.getQuantity());
 			orderListDto.setSubtotal((this.productService.selectOneProduct(sporder.getProductid()).getProduct_price())
 					* (sporder.getQuantity()));
-			orderListDto.setCreate_time(LocalDateTime.now());
+			orderListDto.setRequest(this.spOrderService.getOneOrder(sporder.getId()).getRequest());
+			orderListDto.setStatus(this.spOrderService.getOneOrder(sporder.getId()).getStatus());
+			orderListDto.setCreate_time(this.spOrderService.getOneOrder(sporder.getId()).getCreate_time());
 			orderListDto.setOrderid(sporder.getId());
 			orderlist.add(orderListDto);
 			Long quantity = sporder.getQuantity();
@@ -214,7 +225,7 @@ public class SpOrderController {
 		ArrayList<OrderListDto> orderlist = new ArrayList<>();
 		long ordersum = 0;
 		for (SpOrder sporder : spOrder) {
-			if(sporder.getStatus().equals("주문닫힘")){
+			if(sporder.getStatus().equals(3)){
 			OrderListDto orderListDto = new OrderListDto();
 			orderListDto.setId(sporder.getProductid());
 			orderListDto.setImage_url(this.productService.selectOneProduct(sporder.getProductid()).getImage_url());
@@ -225,7 +236,9 @@ public class SpOrderController {
 			orderListDto.setQuantity(sporder.getQuantity());
 			orderListDto.setSubtotal((this.productService.selectOneProduct(sporder.getProductid()).getProduct_price())
 					* (sporder.getQuantity()));
-			orderListDto.setCreate_time(LocalDateTime.now());
+			orderListDto.setRequest(this.spOrderService.getOneOrder(sporder.getId()).getRequest());
+			orderListDto.setStatus(this.spOrderService.getOneOrder(sporder.getId()).getStatus());
+			orderListDto.setCreate_time(this.spOrderService.getOneOrder(sporder.getId()).getCreate_time());
 			orderListDto.setOrderid(sporder.getId());
 			orderlist.add(orderListDto);
 			Long quantity = sporder.getQuantity();
@@ -247,9 +260,9 @@ public class SpOrderController {
 			System.out.println("찾기 시작");
 			SpOrder order = this.spOrderService.getOneOrder(id);
 			System.out.println("오더하나 찾기");
-			order.setRequest("true");
+			order.setRequest(1);
 			System.out.println("리퀘스트 상태 바꿈");
-			order.setStatus("배송 시작");
+			order.setStatus(1);
 			System.out.println("오더상태 바꿈");
 			this.spOrderService.save(order);
 			System.out.println("오더 저장");
@@ -264,8 +277,7 @@ public class SpOrderController {
 	public String arrive(@PathVariable("id") Long id, SpOrderForm spOrderForm, Model model, Principal principal) {
 		if (principal.getName().equals("seller") || principal.getName().equals("admin")) {
 			SpOrder order = this.spOrderService.getOneOrder(id);
-
-			order.setStatus("배송지 도착");
+			order.setStatus(2);
 			this.spOrderService.save(order);
 			return "redirect:/order/seller/list";
 		} else {
@@ -279,7 +291,8 @@ public class SpOrderController {
 	public String end(@PathVariable("id") Long id, SpOrderForm spOrderForm, Model model, Principal principal) {
 		if (principal.getName().equals("seller") || principal.getName().equals("admin")) {
 			SpOrder order = this.spOrderService.getOneOrder(id);
-			order.setStatus("주문닫힘");
+			order.setStatus(3);
+			this.spOrderService.save(order);
 			SpUser user = this.spUserService.findbyId(order.getUserid());
 			Long userid = user.getId();
 			Long productid = order.getProductid();

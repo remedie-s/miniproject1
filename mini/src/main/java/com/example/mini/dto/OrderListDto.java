@@ -2,8 +2,6 @@ package com.example.mini.dto;
 
 import java.time.LocalDateTime;
 
-import com.example.mini.config.OrderStatus;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,8 +11,8 @@ import lombok.Setter;
 @NoArgsConstructor
 public class OrderListDto {
     private Long id;
-    private OrderStatus status = OrderStatus.READY;
-    private Boolean request = false;
+    private Integer status;
+    private Integer request;
     private String image_url;
     private String product_name;
     private Long product_price;
