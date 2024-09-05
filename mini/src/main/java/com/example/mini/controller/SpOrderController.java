@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.example.mini.config.OrderStatus;
 import com.example.mini.dto.OrderListDto;
 import com.example.mini.dto.SpCartForm;
 import com.example.mini.dto.SpOrderForm;
@@ -142,8 +141,8 @@ public class SpOrderController {
 			spOrder.setProductid(spCart.getProductid());
 			spOrder.setQuantity(spCart.getQuantity());
 			spOrder.setCreate_time(LocalDateTime.now());
-			spOrder.setStatus(OrderStatus.READY);
-			spOrder.setRequest(false);
+			spOrder.setStatus("주문 접수 완료");
+			spOrder.setRequest("false");
 			this.spOrderService.save(spOrder);
 			System.out.println("주문생성 완료1");
 		}
@@ -173,6 +172,7 @@ public class SpOrderController {
 		ArrayList<OrderListDto> orderlist = new ArrayList<>();
 		long ordersum = 0;
 		for (SpOrder sporder : spOrder) {
+			if(!sporder.getStatus().equals("주문닫힘")){
 			OrderListDto orderListDto = new OrderListDto();
 			orderListDto.setId(sporder.getProductid());
 			orderListDto.setImage_url(this.productService.selectOneProduct(sporder.getProductid()).getImage_url());
@@ -189,6 +189,49 @@ public class SpOrderController {
 			Long quantity = sporder.getQuantity();
 			Long price = this.productService.selectOneProduct(sporder.getProductid()).getProduct_price();
 			ordersum += quantity * price;
+			}
+		}
+		model.addAttribute("ordersum", ordersum);
+		model.addAttribute("orderlist", orderlist);
+		return "order_seller_list";
+	}
+	@GetMapping("/seller/list/complete")
+	public String orderSellerListCom(Principal principal, Model model) {
+		if (!principal.getName().equals("seller") && !principal.getName().equals("admin")) {
+			return "order_list";
+		}
+		List<SpOrder> spOrder;
+		try {
+			spOrder = this.spOrderService.getAllOrder();
+			if (spOrder == null) {
+				spOrder = new ArrayList<>();
+			}
+		} catch (Exception e) {
+			spOrder = new ArrayList<>();
+			e.printStackTrace();
+			return "index";
+		}
+		ArrayList<OrderListDto> orderlist = new ArrayList<>();
+		long ordersum = 0;
+		for (SpOrder sporder : spOrder) {
+			if(sporder.getStatus().equals("주문닫힘")){
+			OrderListDto orderListDto = new OrderListDto();
+			orderListDto.setId(sporder.getProductid());
+			orderListDto.setImage_url(this.productService.selectOneProduct(sporder.getProductid()).getImage_url());
+			orderListDto
+					.setProduct_name(this.productService.selectOneProduct(sporder.getProductid()).getProduct_name());
+			orderListDto
+					.setProduct_price(this.productService.selectOneProduct(sporder.getProductid()).getProduct_price());
+			orderListDto.setQuantity(sporder.getQuantity());
+			orderListDto.setSubtotal((this.productService.selectOneProduct(sporder.getProductid()).getProduct_price())
+					* (sporder.getQuantity()));
+			orderListDto.setCreate_time(LocalDateTime.now());
+			orderListDto.setOrderid(sporder.getId());
+			orderlist.add(orderListDto);
+			Long quantity = sporder.getQuantity();
+			Long price = this.productService.selectOneProduct(sporder.getProductid()).getProduct_price();
+			ordersum += quantity * price;
+			}
 		}
 		model.addAttribute("ordersum", ordersum);
 		model.addAttribute("orderlist", orderlist);
@@ -204,9 +247,9 @@ public class SpOrderController {
 			System.out.println("찾기 시작");
 			SpOrder order = this.spOrderService.getOneOrder(id);
 			System.out.println("오더하나 찾기");
-			order.setRequest(true);
+			order.setRequest("true");
 			System.out.println("리퀘스트 상태 바꿈");
-			order.setStatus(OrderStatus.START);
+			order.setStatus("배송 시작");
 			System.out.println("오더상태 바꿈");
 			this.spOrderService.save(order);
 			System.out.println("오더 저장");
@@ -222,7 +265,7 @@ public class SpOrderController {
 		if (principal.getName().equals("seller") || principal.getName().equals("admin")) {
 			SpOrder order = this.spOrderService.getOneOrder(id);
 
-			order.setStatus(OrderStatus.ARRIVE);
+			order.setStatus("배송지 도착");
 			this.spOrderService.save(order);
 			return "redirect:/order/seller/list";
 		} else {
@@ -236,11 +279,14 @@ public class SpOrderController {
 	public String end(@PathVariable("id") Long id, SpOrderForm spOrderForm, Model model, Principal principal) {
 		if (principal.getName().equals("seller") || principal.getName().equals("admin")) {
 			SpOrder order = this.spOrderService.getOneOrder(id);
-			order.setStatus(OrderStatus.END);
+			order.setStatus("주문닫힘");
 			SpUser user = this.spUserService.findbyId(order.getUserid());
 			Long userid = user.getId();
 			Long productid = order.getProductid();
 			Product product = this.productService.selectOneProduct(productid);
+			if(product.getCostomerList()==null){
+				product.setCostomerList(new ArrayList());
+			}
 			product.addCustomer(userid);
 			this.productService.save(product);
 			return "redirect:/order/seller/list";
@@ -250,7 +296,7 @@ public class SpOrderController {
 		}
 	}
 
-	// TODO id를 어떻게 구해와야할까
+	
 	@GetMapping("/delete/{id}")
 	public String delete(@PathVariable("id") long id, Principal principal) {
 

@@ -2,8 +2,6 @@ package com.example.mini.entity;
 
 import java.time.LocalDateTime;
 
-import com.example.mini.config.OrderStatus;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -23,8 +21,8 @@ public class SpOrder {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	private OrderStatus status = OrderStatus.READY;
-	private Boolean request = false;
+	private String status = "READY";
+	private String request = "false";
 	private Long userid;
 	private Long productid;
     private Long quantity;
