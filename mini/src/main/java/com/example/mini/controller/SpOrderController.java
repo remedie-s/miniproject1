@@ -151,7 +151,7 @@ public class SpOrderController {
 		System.out.println("카트 삭제");
 		this.spCartService.deleteByUserid(userid);
 
-		return "redirect:/order/list/";
+		return "redirect:/order/list/"+userid;
 	}
 
 	@GetMapping("/seller/list")
