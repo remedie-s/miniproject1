@@ -11,19 +11,19 @@
                     <p class="login-box-msg">물품 등록</p>
                     <form method="post" th:object="${productForm}" th:action="@{/product/create}">
                         <div class="input-group mb-3">
-                            <input type="text" id="product_name" th:field="*{product_name}" class="form-control" placeholder="물건이름">
+                            <input type="text" id="product_name" th:field="*{product_name}" class="form-control" placeholder="물건이름" required>
                         </div>
                         <div class="input-group mb-3">
-                            <input type="text" id="description" th:field="*{description}" class="form-control" placeholder="물건설명">
+                            <input type="text" id="description" th:field="*{description}" class="form-control" placeholder="물건설명" required>
                         </div>
                         <div class="input-group mb-3">
-                            <input type="number" id="product_price" th:field="*{product_price}" class="form-control" placeholder="물건가격">
+                            <input type="number" id="product_price" th:field="*{product_price}" class="form-control" placeholder="물건가격" required>
                         </div>
                         <div class="input-group mb-3">
-                            <input type="number" id="product_quantity" th:field="*{product_quantity}" class="form-control" placeholder="물건 재고">
+                            <input type="number" id="product_quantity" th:field="*{product_quantity}" class="form-control" placeholder="물건 재고" required>
                         </div>
                         <div class="input-group mb-3">
-                            <input type="text" id="image_url" th:field="*{image_url}" class="form-control" placeholder="물건 이미지 url">
+                            <input type="text" id="image_url" th:field="*{image_url}" class="form-control" placeholder="물건 이미지 url" required>
                         </div>
                         <div class="input-group mb-3">
                             <input type="reset" value="초기화" class="btn btn-warning">
