@@ -35,7 +35,9 @@ public class QnA_PostController {
 	@GetMapping("/list")
 	public String list(Model model) {
 		List<QnA_Post> postlist = this.qnA_PostService.getAllPost();
-
+		for (QnA_Post qnA_Post : postlist) {
+			System.out.println(qnA_Post);
+		}
 		model.addAttribute("postlist", postlist);
 		return "qna_post_list";
 	}
@@ -61,12 +63,13 @@ public class QnA_PostController {
 	}
 
 	@PostMapping("/create")
-	public String create(@Valid QnAPostForm qnAPostForm, BindingResult bindingResult) {
+	public String create(@Valid QnAPostForm qnAPostForm, BindingResult bindingResult,Principal principal) {
 		if (bindingResult.hasErrors()) {
 			System.out.println("에러가 있어요");
 			return "qna_post_form";
 		}
-		this.qnA_PostService.create(qnAPostForm.getSubject(), qnAPostForm.getContent(), qnAPostForm.getUserid());
+		
+		this.qnA_PostService.create(qnAPostForm.getSubject(), qnAPostForm.getContent(), principal.getName());
 		System.out.println("저장합니다");
 		return "redirect:/qna/post/list";
 	}

@@ -35,8 +35,11 @@
                                 <th>제품별총가격</th>
                                 <th>주문 상태</th>
                                 <th>주문시간</th>
+                                <th>주문한 사람</th>
                                 <th>주문승인</th>
-                                <th>주문완료</th>
+                                <th>배송완료</th>
+                                <th>주문닫힘</th>
+                                <th>주문삭제</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -65,16 +68,26 @@
                                     <span th:case="1"> 주문승인 </span>
                                     <span th:case="2"> 배송도착 </span>
                                     <span th:case="3"> 주문닫힘 </span>
+                                    <span th:case="10"> 반품 </span>
                                     <span th:case="*"> 상태 불명 </span>
                                 </td>
                                 <td>
                                     <span th:text="${orderListDto.createTime}"></span>
                                 </td>
                                 <td>
+                                    <span th:text="${orderListDto.userid}"></span>
+                                </td>
+                                <td>
                                     <a th:href="@{|/order/accept/${ orderListDto.orderid }|}"> 주문승인 </a>
                                 </td>
                                 <td>
-                                    <a th:href="@{|/order/end/${ orderListDto.orderid }|}"> 주문완료 </a>
+                                    <a th:href="@{|/order/arrive/${ orderListDto.orderid }|}"> 배송완료 </a>
+                                </td>
+                                <td>
+                                    <a th:href="@{|/order/end/${ orderListDto.orderid }|}"> 주문닫힘 </a>
+                                </td>
+                                <td>
+                                    <a th:href="@{|/order/delete/${ orderListDto.orderid }|}"> 주문삭제 </a>
                                 </td>
 
                             </tr>

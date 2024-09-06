@@ -34,7 +34,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr th:each="post, idx : ${postlist}"> <!--  반복되는 가장 상위 요소 <= 반복문 적용 -->
+                            <tr th:each="post : ${postlist}"> <!--  반복되는 가장 상위 요소 <= 반복문 적용 -->
                                 <td>
                                     <span th:text="${post.id}"></span>
                                 </td>
@@ -50,7 +50,7 @@
                                     <span th:text="${post.createDate}"></span>
                                 </td>
                                 <td>
-                                    <span th:text="${post.spuser.username}"></span>
+                                    <span th:text="${post.username}"></span>
                                 </td>
                                 <td>
                                     <a th:href="@{|/qna/post/delete/${ post.id }|}" >   삭제  </a>

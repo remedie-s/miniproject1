@@ -20,5 +20,6 @@ public class OrderListDto {
     private Long subtotal;
     private LocalDateTime createTime;
     private Long orderid;
+    private Long userid;
 
 }

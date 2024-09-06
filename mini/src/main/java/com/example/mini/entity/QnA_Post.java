@@ -3,11 +3,10 @@ package com.example.mini.entity;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -28,15 +27,15 @@ public class QnA_Post {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
 	private SpUser spuser;
 	@Column(length = 100)
 	private String subject;
 	@Column(length = 500)
 	private String content;
 	private LocalDateTime createDate;
-	private Long userid;
-	@JsonIgnore
+	private String username;
+	
 	@OneToMany(mappedBy = "qnA_Post", cascade = CascadeType.REMOVE)
 	private List<QnA_Review> reviewsList;
 

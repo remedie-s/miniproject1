@@ -79,6 +79,7 @@ public class SpOrderController {
 			orderListDto.setStatus(sporder.getStatus());
 			orderListDto.setCreateTime(sporder.getCreateTime());
 			orderListDto.setOrderid(sporder.getId());
+			orderListDto.setUserid(sporder.getUserid());
 			orderlist.add(orderListDto);
 			Long quantity = sporder.getQuantity();
 			Long price = this.productService.selectOneProduct(sporder.getProductid()).getProduct_price();
@@ -146,8 +147,8 @@ public class SpOrderController {
 				spOrder.setProductid(spCart.getProductid());
 				spOrder.setQuantity(spCart.getQuantity());
 				spOrder.setCreateTime(LocalDateTime.now());
-				spOrder.setStatus(1);
-				spOrder.setRequest(1);
+				spOrder.setStatus(0);
+				spOrder.setRequest(0);
 				this.spOrderService.save(spOrder);
 				// 주문 생성시 주문한 물품 재고량에서 뺌
 				orderedProduct.setProduct_quantity(orderedProduct.getProduct_quantity() - spCart.getQuantity());
@@ -204,6 +205,7 @@ public class SpOrderController {
 				orderListDto.setStatus(sporder.getStatus());
 				orderListDto.setCreateTime(sporder.getCreateTime());
 				orderListDto.setOrderid(sporder.getId());
+				orderListDto.setUserid(sporder.getUserid());
 				orderlist.add(orderListDto);
 				Long quantity = sporder.getQuantity();
 				Long price = this.productService.selectOneProduct(sporder.getProductid()).getProduct_price();
@@ -216,7 +218,7 @@ public class SpOrderController {
 		model.addAttribute("currentPage", page);
 		model.addAttribute("totalPages", spOrderp.getTotalPages());
 		model.addAttribute("totalItems", spOrderp.getTotalElements());
-
+		
 		return "order_seller_list";
 	}
 
@@ -261,6 +263,7 @@ public class SpOrderController {
 				orderListDto.setStatus(sporder.getStatus());
 				orderListDto.setCreateTime(sporder.getCreateTime());
 				orderListDto.setOrderid(sporder.getId());
+				orderListDto.setUserid(sporder.getUserid());
 				orderlist.add(orderListDto);
 				Long quantity = sporder.getQuantity();
 				Long price = this.productService.selectOneProduct(sporder.getProductid()).getProduct_price();
@@ -289,6 +292,29 @@ public class SpOrderController {
 			order.setRequest(1);
 			System.out.println("리퀘스트 상태 바꿈");
 			order.setStatus(1);
+			System.out.println("오더상태 바꿈");
+			this.spOrderService.save(order);
+			System.out.println("오더 저장");
+			return "redirect:/order/seller/list";
+		} else {
+			System.out.println("권한이 없습니다");
+			return "order_list";
+		}
+	}
+
+	@GetMapping("/refund/{id}")
+	public String refund(@PathVariable("id") Long id, Principal principal) {
+		// 아이디가 셀러 혹은 어드민일 경우에만 주문상태 변경가능
+		System.out.println("찾기 시작");
+		SpOrder order = this.spOrderService.getOneOrder(id);
+		System.out.println("오더하나 찾기");
+		
+		if (principal.getName().equals(this.spUserService.findbyId(order.getUserid()).getUsername())) {
+			System.out.println("동일성 검사");
+			
+			order.setRequest(10);
+			System.out.println("리퀘스트 상태 바꿈");
+			order.setStatus(10);
 			System.out.println("오더상태 바꿈");
 			this.spOrderService.save(order);
 			System.out.println("오더 저장");
@@ -341,8 +367,16 @@ public class SpOrderController {
 	public String delete(@PathVariable("id") long id, Principal principal) {
 
 		SpOrder order = this.spOrderService.getOneOrder(id);
+		// 오더 수량만큼 재고 수량에 + 할까? 망실물도있을껀데 농산물은  반품안되긴할껀데
+		Product product = this.productService.selectOneProduct(order.getProductid());
+		product.setProduct_quantity(product.getProduct_quantity()+order.getQuantity());
+		this.productService.save(product);
 		this.spOrderService.delete(order);
 		System.out.println("반품 완료");
+		List<Long> costomerList = product.getCostomerList();
+		costomerList.remove(order.getUserid());
+		System.out.println("리뷰허용자목록 삭제 완료");
+
 		return "redirect:/order/list";
 
 	}
